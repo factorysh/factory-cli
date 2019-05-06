@@ -13,9 +13,8 @@ func readJson(resp *http.Response, value interface{}) error {
 	if resp.StatusCode%100 != 2 {
 		return fmt.Errorf("Bad status: %v", resp.Status)
 	}
-	defer resp.Body.Close()
+	var reader io.ReadCloser
 	enc := resp.Header.Get("Content-encoding")
-	var reader io.Reader
 	if enc != "" {
 		if enc == "gzip" {
 			var err error
@@ -29,6 +28,7 @@ func readJson(resp *http.Response, value interface{}) error {
 	} else {
 		reader = resp.Body
 	}
+	defer reader.Close()
 	raw, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return err
