@@ -2,14 +2,9 @@ package client
 
 import (
 	"bytes"
-	"compress/gzip"
-	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strings"
 
 	"gitlab.bearstech.com/factory/factory-cli/version"
@@ -33,47 +28,6 @@ func New(project string) *Session {
 	s.headers.Set("Accept-Encoding", "gzip")
 	s.headers.Set("Connection", "keep-alive")
 	return s
-}
-
-func parseAuthenticate(txt string) (map[string]string, error) {
-	// https://tools.ietf.org/html/rfc2617#page-8
-	values := make(map[string]string)
-	re := regexp.MustCompile(`(\w+)\s*=\s*"(.*)"`)
-	for _, blob := range strings.Split(txt, ",") {
-		m := re.FindStringSubmatch(blob)
-		if len(m) != 3 {
-			return nil, fmt.Errorf("Invalid header: %v", blob)
-		}
-		values[m[1]] = m[2]
-	}
-	return values, nil
-}
-
-func readJson(resp *http.Response, value interface{}) error {
-	if resp.StatusCode%100 != 2 {
-		return fmt.Errorf("Bad status: %v", resp.Status)
-	}
-	defer resp.Body.Close()
-	enc := resp.Header.Get("Content-encoding")
-	var reader io.Reader
-	if enc != "" {
-		if enc == "gzip" {
-			var err error
-			reader, err = gzip.NewReader(resp.Body)
-			if err != nil {
-				return err
-			}
-		} else {
-			return fmt.Errorf("Wrong encoding: %s", enc)
-		}
-	} else {
-		reader = resp.Body
-	}
-	raw, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(raw, value)
 }
 
 func (s *Session) getMe(_url string) (string, error) {
