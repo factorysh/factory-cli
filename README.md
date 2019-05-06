@@ -1,16 +1,10 @@
-Factory-cli
-===========
+# Factory-cli
 
 The cli hub for doing things with factory.
 
-Factory-cli is a GAR client, handling GRPC protocol.
-
-Just like git, naming trick is used : `factory user` calls `factory-user`.
-
 Factory CLI talks to multiple services and handles redirections.
 
-Commands
---------
+## Commands
 
     factory user inspect
 
@@ -27,4 +21,3 @@ Commands
     factory project PROJECT container ls
 
     factory container CONTAINER logs
-
