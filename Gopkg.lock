@@ -45,6 +45,14 @@
   version = "v1.0"
 
 [[projects]]
+  digest = "1:0f51cee70b0d254dbc93c22666ea2abf211af81c1701a96d04e2284b408621db"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = ""
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   digest = "1:961dc3b1d11f969370533390fdf203813162980c858e1dabe827b60940c909a5"
   name = "github.com/magiconair/properties"
   packages = ["."]
@@ -69,6 +77,14 @@
   version = "v1.1.2"
 
 [[projects]]
+  digest = "1:6271dbc4e88c50d21dd4558c7876d30f9a8bf346ea17877020c52f3b85a8caa5"
+  name = "github.com/onrik/logrus"
+  packages = ["filename"]
+  pruneopts = ""
+  revision = "53793512254a4e0167c1f8a8dfaea958cf2c9824"
+  version = "v0.3.0"
+
+[[projects]]
   digest = "1:3d2c33720d4255686b9f4a7e4d3b94938ee36063f14705c5eb0f73347ed4c496"
   name = "github.com/pelletier/go-toml"
   packages = ["."]
@@ -83,6 +99,14 @@
   pruneopts = ""
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:631ea4a52a20ca54eceb1077e8c7e553a4f86a58639824825d9259374f7c362f"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = ""
+  revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
+  version = "v1.4.1"
 
 [[projects]]
   digest = "1:956f655c87b7255c6b1ae6c203ebb0af98cf2a13ef2507e34c9bf1c0332ac0f5"
@@ -179,6 +203,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/mitchellh/go-homedir",
+    "github.com/onrik/logrus/filename",
+    "github.com/sirupsen/logrus",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/stretchr/testify/assert",

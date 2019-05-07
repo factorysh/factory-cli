@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"gitlab.bearstech.com/factory/factory-cli/version"
 )
 
@@ -54,25 +55,31 @@ func (s *Session) getMe(_url string) (string, error) {
 }
 
 func (s *Session) getToken(realm string) (string, error) {
+	l := log.WithField("realm", realm)
 	u, err := url.Parse(realm)
 	if err != nil {
+		l.WithError(err).Error()
 		return "", err
 	}
 	me, err := s.getMe(fmt.Sprintf("%s://%s", u.Scheme, u.Host))
 	if err != nil {
+		l.WithError(err).Error()
 		return "", err
 	}
+	l = l.WithField("me", me)
 	buff := bytes.NewBufferString("client_id=gitlab_ci&service=container_registry&offline_token=true")
 	fmt.Fprintf(buff, "&scope=repository:%v:%v", s.project, "pull") // FIXME why always pull?
 	u.RawQuery = url.QueryEscape(buff.String())
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
+		l.WithError(err).Error()
 		return "", err
 	}
 	s.patchHeader(req)
 	req.SetBasicAuth(me, s.privateToken)
 	resp, err := s.client.Do(req)
 	if err != nil {
+		l.WithError(err).Error()
 		return "", err
 	}
 	type t struct {
@@ -80,9 +87,12 @@ func (s *Session) getToken(realm string) (string, error) {
 	}
 	var token t
 	err = ReadJson(resp, &token)
+	l = l.WithField("token", token)
 	if err != nil {
+		l.WithError(err).Error()
 		return "", err
 	}
+	l.Debug("getToken")
 	return token.Token, nil
 }
 
