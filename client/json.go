@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func readJson(resp *http.Response, value interface{}) error {
+func ReadJson(resp *http.Response, value interface{}) error {
 	if resp.StatusCode%100 != 2 {
 		return fmt.Errorf("Bad status: %v", resp.Status)
 	}

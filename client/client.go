@@ -17,11 +17,12 @@ type Session struct {
 	headers      http.Header
 }
 
-func New(project string) *Session {
+func New(project string, privateToken string) *Session {
 	s := &Session{
-		client:  &http.Client{},
-		project: project,
-		headers: make(http.Header),
+		client:       &http.Client{},
+		project:      project,
+		privateToken: privateToken,
+		headers:      make(http.Header),
 	}
 	s.headers.Set("User-Agent", fmt.Sprintf("Factory-cli/%v", version.Version()))
 	s.headers.Set("DNT", "1")
@@ -45,7 +46,7 @@ func (s *Session) getMe(_url string) (string, error) {
 		Username string `json:"username"`
 	}
 	var jresp u
-	err = readJson(res, &jresp)
+	err = ReadJson(res, &jresp)
 	if err != nil {
 		return "", err
 	}
@@ -78,7 +79,7 @@ func (s *Session) getToken(realm string) (string, error) {
 		Token string `json:"token"`
 	}
 	var token t
-	err = readJson(resp, &token)
+	err = ReadJson(resp, &token)
 	if err != nil {
 		return "", err
 	}
