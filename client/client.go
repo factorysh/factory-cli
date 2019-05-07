@@ -58,7 +58,7 @@ func (s *Session) getToken(realm string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	me, err := s.getMe(fmt.Sprintf("%s/%s", u.Scheme, u.Host))
+	me, err := s.getMe(fmt.Sprintf("%s://%s", u.Scheme, u.Host))
 	if err != nil {
 		return "", err
 	}
