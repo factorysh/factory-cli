@@ -10,7 +10,7 @@ import (
 )
 
 func ReadJson(resp *http.Response, value interface{}) error {
-	if resp.StatusCode%100 != 2 {
+	if resp.StatusCode/100 != 2 {
 		return fmt.Errorf("Bad status: %v", resp.Status)
 	}
 	var reader io.ReadCloser
