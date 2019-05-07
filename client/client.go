@@ -68,8 +68,9 @@ func (s *Session) getToken(realm string) (string, error) {
 	}
 	l = l.WithField("me", me)
 	buff := bytes.NewBufferString("client_id=gitlab_ci&service=container_registry&offline_token=true")
-	fmt.Fprintf(buff, "&scope=repository:%v:%v", s.project, "pull") // FIXME why always pull?
-	u.RawQuery = url.QueryEscape(buff.String())
+	fmt.Fprintf(buff, "&scope=repository:%v:%v", url.QueryEscape(s.project), "pull") // FIXME why always pull?
+	u.RawQuery = buff.String()
+	l = l.WithField("url", u.String())
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		l.WithError(err).Error()
@@ -87,11 +88,11 @@ func (s *Session) getToken(realm string) (string, error) {
 	}
 	var token t
 	err = ReadJson(resp, &token)
-	l = l.WithField("token", token)
 	if err != nil {
 		l.WithError(err).Error()
 		return "", err
 	}
+	l = l.WithField("token", token)
 	l.Debug("getToken")
 	return token.Token, nil
 }
