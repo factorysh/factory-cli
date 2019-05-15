@@ -23,13 +23,25 @@ var projectsCmd = &cobra.Command{
 			return nil
 		}
 		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab))
-		projects, _, err := git.Projects.ListProjects(&_gitlab.ListProjectsOptions{})
-		if err != nil {
-			return err
-		}
-
-		for _, p := range projects {
-			fmt.Println(p.PathWithNamespace)
+		page := 0
+		for {
+			opts := &_gitlab.ListProjectsOptions{
+				OrderBy: _gitlab.String("name"),
+				Sort:    _gitlab.String("asc"),
+			}
+			opts.Page = page
+			projects, r, err := git.Projects.ListProjects(opts)
+			if err != nil {
+				return err
+			}
+			if r.CurrentPage < r.TotalPages {
+				page++
+			} else {
+				break
+			}
+			for _, p := range projects {
+				fmt.Println(p.PathWithNamespace)
+			}
 		}
 		return nil
 	},
