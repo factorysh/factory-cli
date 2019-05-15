@@ -29,6 +29,7 @@ import (
 var (
 	cfgFile string
 	gitlab  string
+	verbose bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -73,7 +74,7 @@ func init() {
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
 	rootCmd.PersistentFlags().StringVarP(&gitlab, "gitlab", "g", "", "Gitlab server")
-
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output")
 }
 
 // initConfig reads in config file and ENV variables if set.

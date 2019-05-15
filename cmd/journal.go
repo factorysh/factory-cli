@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/journaleux"
 )
 
@@ -25,13 +26,28 @@ var journalCmd = &cobra.Command{
 	Short: "Show journal",
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println(args)
-		log.SetLevel(log.DebugLevel)
+		if verbose {
+			log.SetLevel(log.DebugLevel)
+		} else {
+			log.SetLevel(log.InfoLevel)
+		}
+		var (
+			project string
+			err     error
+		)
+		if len(args) > 0 {
+			project = args[0]
+		} else {
+			_, project, err = _gitlab.GitRemote()
+			if err != nil {
+				return err
+			}
+		}
 		j, err := journaleux.New(target, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
-		h, err := j.Project(args[0]).Hello()
+		h, err := j.Project(project).Hello()
 		if err != nil {
 			return err
 		}
