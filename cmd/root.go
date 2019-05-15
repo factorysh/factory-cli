@@ -23,6 +23,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 )
 
 var (
@@ -52,6 +53,14 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func guessGitlab() (string, error) {
+	if gitlab != "" {
+		return gitlab, nil
+	}
+	server, _, err := _gitlab.GitRemote()
+	return server, err
 }
 
 func init() {

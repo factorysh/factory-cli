@@ -18,6 +18,10 @@ var projectsCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
+		gitlab, err := guessGitlab()
+		if err != nil {
+			return nil
+		}
 		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab))
 		projects, _, err := git.Projects.ListProjects(&_gitlab.ListProjectsOptions{})
 		if err != nil {

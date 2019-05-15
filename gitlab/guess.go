@@ -2,7 +2,6 @@ package gitlab
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -30,7 +29,6 @@ func GitRemote() (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Println(line)
 	cmd = exec.Command("git", "remote", "show", line[:len(line)-1])
 	cmd.Env = append(os.Environ(), "LANG=C")
 	stdout, err = cmd.StdoutPipe()
