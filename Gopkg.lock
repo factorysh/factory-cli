@@ -11,14 +11,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b05f7b39bb2039bf58b7427c20bcea1ce12227277177d5b5077ad7e9d6e23555"
+  digest = "1:810a081d6644e37bad5c9285d4b0d641a2d069bfdfeb539c01d82da5f5de5fe5"
   name = "github.com/factorysh/go-longrun"
   packages = [
     "longrun/sse",
     "run",
   ]
   pruneopts = ""
-  revision = "87af828976089c3e6745b72a4ad7be0ee9db1e3d"
+  revision = "cc206506f923ec47264943b41d98c2db6983eb48"
 
 [[projects]]
   digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
@@ -234,11 +234,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c835b38cbfcccf755264465f1faf4e7558cfe128d2822dc2374169776af7a4a5"
+  digest = "1:677902b7cbbfa124deba62fc56aaa9ec7ad76ab7c45d42f76c973d3e7a1ef109"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = ""
-  revision = "06a5c494443846f634903706cba8f993687d3ff5"
+  revision = "61b9204099cb1bebc803c9ffb9b2d3acd9d457d9"
 
 [[projects]]
   digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
