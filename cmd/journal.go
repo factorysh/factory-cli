@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", 100, "Number of lines to display")
+	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
 	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
 	rootCmd.AddCommand(journalCmd)
 }
