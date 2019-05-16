@@ -1,6 +1,8 @@
 package journaleux
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -65,10 +67,20 @@ func (p *Project) Hello() (string, error) {
 	return rr.Msg, nil
 }
 
-func (p *Project) Logs(lines int, visitor func(evt *sse.Event) error) error {
+type LogsOpt struct {
+	Project string `json:"project`
+	Lines   int    `json:"lines`
+}
+
+func (p *Project) Logs(opts *LogsOpt, visitor func(evt *sse.Event) error) error {
+	buff, err := json.Marshal(opts)
+	if err != nil {
+		return err
+	}
 
 	req, err := http.NewRequest("POST",
-		fmt.Sprintf("%s/logs", p.journaleux.target.String()), nil)
+		fmt.Sprintf("%s/logs", p.journaleux.target.String()),
+		bytes.NewReader(buff))
 	if err != nil {
 		return err
 	}
@@ -76,7 +88,9 @@ func (p *Project) Logs(lines int, visitor func(evt *sse.Event) error) error {
 	if err != nil {
 		return err
 	}
-
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("Bad status: %v", resp.Status)
+	}
 	err = sse.Reader(resp.Body, visitor)
 	if err != nil {
 		return err

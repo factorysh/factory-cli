@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/factorysh/go-longrun/longrun/sse"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
@@ -51,7 +52,14 @@ var journalCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(h)
+		log.Debug(h)
+		j.Project(project).Logs(&journaleux.LogsOpt{
+			Project: project,
+			Lines:   lines,
+		}, func(evt *sse.Event) error {
+			fmt.Println(evt)
+			return nil
+		})
 		return nil
 	},
 }
