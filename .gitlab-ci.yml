@@ -16,6 +16,7 @@ build:
 test:
   stage: test
   script:
+    - git remote -v
     - make docker-test
   cache:
     paths:
