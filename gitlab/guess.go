@@ -7,6 +7,22 @@ import (
 	"strings"
 )
 
+func gitUrl(url string) (string, string) {
+	slugs := strings.SplitN(url, "@", 2)
+	slugs = strings.SplitN(slugs[1], ":", 2)
+	server := slugs[0]
+	project := strings.SplitN(slugs[1], ".", 2)[0]
+	return server, project
+}
+
+func httpUrl(url string) (string, string) {
+	slugs := strings.SplitN(url, "@", 2)
+	slugs = strings.SplitN(slugs[1], "/", 2)
+	server := slugs[0]
+	project := strings.SplitN(slugs[1], ".", 2)[0]
+	return server, project
+}
+
 // GitRemote returns server, project, error
 func GitRemote() (string, string, error) {
 	cmd := exec.Command("git", "remote", "show")
@@ -50,12 +66,16 @@ func GitRemote() (string, string, error) {
 			return "", "", err
 		}
 		if strings.HasPrefix(strings.TrimSpace(line), origin+"\t") {
-			// match "origin\tgitlab@... (fetch)"
 			slugs := strings.SplitN(line, "\t", 2)
-			slugs = strings.SplitN(slugs[1], "@", 2)
-			slugs = strings.SplitN(slugs[1], ":", 2)
-			server = slugs[0]
-			project = strings.SplitN(slugs[1], ".", 2)[0]
+			slugs = strings.SplitN(slugs[1], " ", 2)
+			url := slugs[0]
+			if strings.HasPrefix(strings.TrimSpace(url), "http") {
+				// match "origin\thttp...gitlab@... (fetch)"
+				server, project = httpUrl(url)
+			} else {
+				// match "origin\tgitlab@... (fetch)"
+				server, project = gitUrl(url)
+			}
 			break
 		}
 	}
