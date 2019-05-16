@@ -1,0 +1,23 @@
+---
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - make docker-build
+  cache:
+    paths:
+      - vendor
+      - bin
+
+test:
+  stage: test
+  script:
+    - make docker-test
+  cache:
+    paths:
+      - vendor
+      - bin
