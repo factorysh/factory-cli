@@ -10,6 +10,17 @@
   version = "v1.1.1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:b05f7b39bb2039bf58b7427c20bcea1ce12227277177d5b5077ad7e9d6e23555"
+  name = "github.com/factorysh/go-longrun"
+  packages = [
+    "longrun/sse",
+    "run",
+  ]
+  pruneopts = ""
+  revision = "87af828976089c3e6745b72a4ad7be0ee9db1e3d"
+
+[[projects]]
   digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -32,6 +43,14 @@
   pruneopts = ""
   revision = "44c6ddd0a2342c386950e880b658017258da92fc"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:ad92aa49f34cbc3546063c7eb2cabb55ee2278b72842eda80e2a20a8a06a8d73"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = ""
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
+  version = "v1.1.1"
 
 [[projects]]
   digest = "1:d14365c51dd1d34d5c79833ec91413bfbb166be978724f15701e17080dc06dec"
@@ -264,6 +283,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/factorysh/go-longrun/longrun/sse",
     "github.com/mitchellh/go-homedir",
     "github.com/onrik/logrus/filename",
     "github.com/sirupsen/logrus",

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/factorysh/go-longrun/longrun/sse"
 	"gitlab.bearstech.com/factory/factory-cli/client"
 )
 
@@ -64,6 +65,21 @@ func (p *Project) Hello() (string, error) {
 	return rr.Msg, nil
 }
 
-func (p *Project) Logs(lines int) {
+func (p *Project) Logs(lines int, visitor func(evt *sse.Event) error) error {
 
+	req, err := http.NewRequest("POST",
+		fmt.Sprintf("%s/logs", p.journaleux.target.String()), nil)
+	if err != nil {
+		return err
+	}
+	resp, err := p.session.Do(req)
+	if err != nil {
+		return err
+	}
+
+	err = sse.Reader(resp.Body, visitor)
+	if err != nil {
+		return err
+	}
+	return nil
 }
