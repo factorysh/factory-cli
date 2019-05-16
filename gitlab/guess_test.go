@@ -1,6 +1,7 @@
 package gitlab
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -10,5 +11,6 @@ import (
 func TestGit(t *testing.T) {
 	_, project, err := GitRemote()
 	assert.NoError(t, err)
+	fmt.Printf("%#v", project)
 	assert.True(t, strings.HasSuffix(project, "factory-cli"))
 }

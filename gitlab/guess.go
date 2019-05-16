@@ -3,7 +3,6 @@ package gitlab
 import (
 	"bufio"
 	"io"
-	"os"
 	"os/exec"
 	"strings"
 )
@@ -29,8 +28,8 @@ func GitRemote() (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	cmd = exec.Command("git", "remote", "show", line[:len(line)-1])
-	cmd.Env = append(os.Environ(), "LANG=C")
+	origin := strings.TrimRight(line, "\n")
+	cmd = exec.Command("git", "remote", "-v")
 	stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		return "", "", err
@@ -50,11 +49,13 @@ func GitRemote() (string, string, error) {
 			}
 			return "", "", err
 		}
-		if strings.HasPrefix(strings.TrimSpace(line), "Fetch URL:") {
-			slugs := strings.SplitN(line[12:], "@", 2)
+		if strings.HasPrefix(strings.TrimSpace(line), origin+"\t") {
+			// match "origin\tgitlab@... (fetch)"
+			slugs := strings.SplitN(line, "\t", 2)
+			slugs = strings.SplitN(slugs[1], "@", 2)
 			slugs = strings.SplitN(slugs[1], ":", 2)
 			server = slugs[0]
-			project = slugs[1][:len(slugs[1])-5]
+			project = strings.SplitN(slugs[1], ".", 2)[0]
 			break
 		}
 	}
