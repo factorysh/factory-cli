@@ -72,7 +72,20 @@ type LogsOpt struct {
 	Lines   int    `json:"lines`
 }
 
-func (p *Project) Logs(opts *LogsOpt, visitor func(evt *sse.Event) error) error {
+type Event struct {
+	Monotonic uint64            `json:"monotonic"`
+	Realtime  uint64            `json:"realtime"`
+	Message   string            `json:"message"`
+	Priority  uint              `json:"priority"`
+	Fields    map[string]string `json:"fields"`
+}
+
+type EventOrError struct {
+	Event *Event `json:"event"`
+	Error error  `json:"error"`
+}
+
+func (p *Project) Logs(opts *LogsOpt, visitor func(*Event, error) error) error {
 	buff, err := json.Marshal(opts)
 	if err != nil {
 		return err
@@ -92,7 +105,14 @@ func (p *Project) Logs(opts *LogsOpt, visitor func(evt *sse.Event) error) error 
 		return fmt.Errorf("Bad status: %v", resp.Status)
 	}
 	defer resp.Body.Close()
-	err = sse.Reader(resp.Body, visitor)
+	err = sse.Reader(resp.Body, func(evt *sse.Event) error {
+		var event EventOrError
+		err := json.Unmarshal([]byte(evt.Data), &event)
+		if err != nil {
+			return err
+		}
+		return visitor(event.Event, event.Error)
+	})
 	if err != nil {
 		return err
 	}

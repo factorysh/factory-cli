@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
-	"github.com/factorysh/go-longrun/longrun/sse"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
@@ -14,11 +14,13 @@ import (
 var (
 	lines  int
 	target string
+	format string
 )
 
 func init() {
 	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
 	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json")
 	rootCmd.AddCommand(journalCmd)
 }
 
@@ -53,13 +55,27 @@ var journalCmd = &cobra.Command{
 			return err
 		}
 		log.Debug(h)
+		cpt := 0
 		j.Project(project).Logs(&journaleux.LogsOpt{
 			Project: project,
 			Lines:   lines,
-		}, func(evt *sse.Event) error {
-			fmt.Println(evt)
+		}, func(evt *journaleux.Event, zerr error) error {
+			switch format {
+			case "bare":
+				fmt.Println(evt.Message)
+			case "json":
+				j, err := json.Marshal(evt)
+				if err != nil {
+					return err
+				}
+				fmt.Println(string(j))
+			default:
+				fmt.Println(evt)
+			}
+			cpt++
 			return nil
 		})
+		log.Debug("Lines:", cpt)
 		return nil
 	},
 }
