@@ -91,6 +91,7 @@ func (p *Project) Logs(opts *LogsOpt, visitor func(evt *sse.Event) error) error 
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("Bad status: %v", resp.Status)
 	}
+	defer resp.Body.Close()
 	err = sse.Reader(resp.Body, visitor)
 	if err != nil {
 		return err
