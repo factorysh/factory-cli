@@ -22,7 +22,7 @@ var (
 func init() {
 	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
 	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
-	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json")
+	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json|jsonpretty")
 	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
 	rootCmd.AddCommand(journalCmd)
 }
@@ -72,6 +72,12 @@ var journalCmd = &cobra.Command{
 				fmt.Println(evt.Message)
 			case "json":
 				j, err := json.Marshal(evt)
+				if err != nil {
+					return err
+				}
+				fmt.Println(string(j))
+			case "jsonpretty":
+				j, err := json.MarshalIndent(evt, "", "  ")
 				if err != nil {
 					return err
 				}
