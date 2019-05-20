@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -35,6 +36,8 @@ func init() {
 var journalCmd = &cobra.Command{
 	Use:   "journal",
 	Short: "Show journal",
+	Long: `Show journal of a project.
+factory journal [flags …] [project] [key=value …]`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if verbose {
@@ -46,9 +49,11 @@ var journalCmd = &cobra.Command{
 			project string
 			err     error
 		)
-		if len(args) > 0 {
-			project = args[0]
-		} else {
+		project, fields, err := guessArgs(args)
+		if err != nil {
+			return err
+		}
+		if project == "" {
 			_, project, err = _gitlab.GitRemote()
 			if err != nil {
 				return err
@@ -75,6 +80,7 @@ var journalCmd = &cobra.Command{
 			Lines:   lines,
 			Follow:  follow,
 			Regexp:  re,
+			Fields:  fields,
 		}, func(evt *journaleux.Event, zerr error) error {
 			switch format {
 			case "bare":
@@ -104,4 +110,23 @@ var journalCmd = &cobra.Command{
 		log.Debug("Lines:", cpt)
 		return nil
 	},
+}
+
+func guessArgs(args []string) (project string, fields map[string]string, err error) {
+	if len(args) == 0 {
+		return "", nil, nil
+	}
+	fields = make(map[string]string)
+	if strings.IndexByte(args[0], '=') == -1 {
+		project = args[0]
+		args = args[1:]
+	}
+	for _, arg := range args {
+		kv := strings.SplitN(arg, "=", 2)
+		if len(kv) != 2 {
+			return "", nil, fmt.Errorf("Bad key=value format: %v", arg)
+		}
+		fields[kv[0]] = kv[1]
+	}
+	return project, fields, nil
 }
