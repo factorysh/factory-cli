@@ -78,17 +78,6 @@ type LogsOpt struct {
 	Fields   map[string]string `json:"fields"`
 }
 
-type Predicate struct {
-	Project  string
-	Lines    int
-	Follow   bool
-	Since    int64
-	Until    int64
-	Priority uint
-	Regexp   string
-	Fields   map[string]string
-}
-
 type Event struct {
 	Monotonic uint64            `json:"monotonic"`
 	Realtime  uint64            `json:"realtime"`
