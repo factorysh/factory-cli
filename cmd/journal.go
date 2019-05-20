@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -12,15 +13,17 @@ import (
 )
 
 var (
-	lines  int
-	target string
-	format string
+	lines     int
+	target    string
+	format    string
+	timestamp bool
 )
 
 func init() {
 	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
 	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
 	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json")
+	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
 	rootCmd.AddCommand(journalCmd)
 }
 
@@ -62,6 +65,10 @@ var journalCmd = &cobra.Command{
 		}, func(evt *journaleux.Event, zerr error) error {
 			switch format {
 			case "bare":
+				if timestamp {
+					t := time.Unix(int64(evt.Realtime)/1000000, (int64(evt.Realtime)%1000000)*1000)
+					fmt.Print(t.Format(time.RFC3339), " ")
+				}
 				fmt.Println(evt.Message)
 			case "json":
 				j, err := json.Marshal(evt)
