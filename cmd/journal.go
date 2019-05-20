@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -18,6 +19,7 @@ var (
 	format    string
 	timestamp bool
 	follow    bool
+	re        string
 )
 
 func init() {
@@ -26,6 +28,7 @@ func init() {
 	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json|jsonpretty")
 	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
 	journalCmd.PersistentFlags().BoolVarP(&follow, "follow", "f", false, "Follow")
+	journalCmd.PersistentFlags().StringVarP(&re, "regexp", "r", "", "Regular expression filter")
 	rootCmd.AddCommand(journalCmd)
 }
 
@@ -61,10 +64,17 @@ var journalCmd = &cobra.Command{
 		}
 		log.Debug(h)
 		cpt := 0
+		if re != "" {
+			_, err = regexp.Compile(re)
+			if err != nil {
+				return err
+			}
+		}
 		j.Project(project).Logs(&journaleux.LogsOpt{
 			Project: project,
 			Lines:   lines,
 			Follow:  follow,
+			Regexp:  re,
 		}, func(evt *journaleux.Event, zerr error) error {
 			switch format {
 			case "bare":
