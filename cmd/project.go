@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
+	__gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 )
 
 func init() {
 	projectCmd.AddCommand(projectLsCmd)
+	projectCmd.AddCommand(environmentsCmd)
 	rootCmd.AddCommand(projectCmd)
 }
 
@@ -48,6 +51,37 @@ var projectLsCmd = &cobra.Command{
 			for _, p := range projects {
 				fmt.Println(p.PathWithNamespace)
 			}
+		}
+		return nil
+	},
+}
+
+var environmentsCmd = &cobra.Command{
+	Use:   "environments",
+	Short: "Show environments",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
+		gitlab, err := guessGitlab()
+		if err != nil {
+			return nil
+		}
+		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab))
+		var project string
+		if len(args) > 0 {
+			project = args[0]
+		} else {
+			_, project, err = __gitlab.GitRemote()
+			if err != nil {
+				return err
+			}
+		}
+		log.Debug(project)
+		environments, _, err := git.Environments.ListEnvironments(project, &_gitlab.ListEnvironmentsOptions{})
+		if err != nil {
+			return err
+		}
+		for _, env := range environments {
+			fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
 		}
 		return nil
 	},
