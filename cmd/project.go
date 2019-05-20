@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
 	__gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
+	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 func init() {
@@ -83,6 +84,37 @@ var environmentsCmd = &cobra.Command{
 		for _, env := range environments {
 			fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
 		}
+		return nil
+	},
+}
+
+var projectTargetCmd = &cobra.Command{
+	Use:   "target",
+	Short: "Show targets of a project",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return fmt.Errorf("[project] environment")
+		}
+		var project, environment string
+		if len(args) == 1 {
+			_, project, err = __gitlab.GitRemote()
+			if err != nil {
+				return err
+			}
+			environment = args[0]
+		} else {
+			project = args[0]
+			environment = args[1]
+		}
+		gitlab, err := guessGitlab()
+		if err != nil {
+			return nil
+		}
+		bastion, err := signpost.WhereIsTheBastion(project, environment)
+		if err != nil {
+			return nil
+		}
+		fmt.Println(bastion)
 		return nil
 	},
 }
