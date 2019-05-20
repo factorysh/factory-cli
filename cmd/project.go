@@ -9,12 +9,18 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(projectsCmd)
+	projectCmd.AddCommand(projectLsCmd)
+	rootCmd.AddCommand(projectCmd)
 }
 
-var projectsCmd = &cobra.Command{
-	Use:   "projects",
-	Short: "Show projects",
+var projectCmd = &cobra.Command{
+	Use:   "project",
+	Short: "Projects subcommand",
+}
+
+var projectLsCmd = &cobra.Command{
+	Use:   "ls",
+	Short: "List projects",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
