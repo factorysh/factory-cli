@@ -68,8 +68,25 @@ func (p *Project) Hello() (string, error) {
 }
 
 type LogsOpt struct {
-	Project string `json:"project`
-	Lines   int    `json:"lines`
+	Project  string            `json:"project"`
+	Lines    int               `json:"lines"`
+	Follow   bool              `json:"follow"`
+	Since    int64             `json:"since"`
+	Until    int64             `json:"until"`
+	Priority uint              `json:"priority"`
+	Regexp   string            `json:"regexp"`
+	Fields   map[string]string `json:"fields"`
+}
+
+type Predicate struct {
+	Project  string
+	Lines    int
+	Follow   bool
+	Since    int64
+	Until    int64
+	Priority uint
+	Regexp   string
+	Fields   map[string]string
 }
 
 type Event struct {

@@ -17,6 +17,7 @@ var (
 	target    string
 	format    string
 	timestamp bool
+	follow    bool
 )
 
 func init() {
@@ -24,6 +25,7 @@ func init() {
 	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
 	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json|jsonpretty")
 	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
+	journalCmd.PersistentFlags().BoolVarP(&follow, "follow", "f", false, "Follow")
 	rootCmd.AddCommand(journalCmd)
 }
 
@@ -62,6 +64,7 @@ var journalCmd = &cobra.Command{
 		j.Project(project).Logs(&journaleux.LogsOpt{
 			Project: project,
 			Lines:   lines,
+			Follow:  follow,
 		}, func(evt *journaleux.Event, zerr error) error {
 			switch format {
 			case "bare":
