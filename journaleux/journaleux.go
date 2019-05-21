@@ -9,50 +9,28 @@ import (
 
 	"github.com/factorysh/go-longrun/longrun/sse"
 	"gitlab.bearstech.com/factory/factory-cli/client"
+	"gitlab.bearstech.com/factory/factory-cli/factory"
 )
 
 type Journaleux struct {
-	target       *url.URL
-	privateToken string
-	projects     map[string]*Project
+	project *factory.Project
+	host    *url.URL
 }
 
-type Project struct {
-	journaleux *Journaleux
-	session    *client.Session
-}
-
-func New(target, privateToken string) (*Journaleux, error) {
-	t, err := url.Parse(target)
-	if err != nil {
-		return nil, err
-	}
+func New(project *factory.Project, host *url.URL) *Journaleux {
 	return &Journaleux{
-		target:       t,
-		privateToken: privateToken,
-		projects:     make(map[string]*Project),
-	}, nil
+		project: project,
+		host:    host,
+	}
 }
 
-func (j *Journaleux) Project(project string) *Project {
-	p, ok := j.projects[project]
-	if ok {
-		return p
-	}
-	j.projects[project] = &Project{
-		journaleux: j,
-		session:    client.New(project, j.privateToken),
-	}
-	return j.projects[project]
-}
-
-func (p *Project) Hello() (string, error) {
+func (j *Journaleux) Hello() (string, error) {
 	req, err := http.NewRequest("GET",
-		fmt.Sprintf("%s/hello", p.journaleux.target.String()), nil)
+		fmt.Sprintf("%s/hello", j.host.String()), nil)
 	if err != nil {
 		return "", err
 	}
-	resp, err := p.session.Do(req)
+	resp, err := j.project.Session().Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -91,19 +69,19 @@ type EventOrError struct {
 	Error error  `json:"error"`
 }
 
-func (p *Project) Logs(opts *LogsOpt, visitor func(*Event, error) error) error {
+func (j *Journaleux) Logs(opts *LogsOpt, visitor func(*Event, error) error) error {
 	buff, err := json.Marshal(opts)
 	if err != nil {
 		return err
 	}
 
 	req, err := http.NewRequest("POST",
-		fmt.Sprintf("%s/logs", p.journaleux.target.String()),
+		fmt.Sprintf("%s/logs", j.host.String()),
 		bytes.NewReader(buff))
 	if err != nil {
 		return err
 	}
-	resp, err := p.session.Do(req)
+	resp, err := j.project.Session().Do(req)
 	if err != nil {
 		return err
 	}

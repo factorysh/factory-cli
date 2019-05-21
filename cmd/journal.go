@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -10,6 +11,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"gitlab.bearstech.com/factory/factory-cli/factory"
 	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/journaleux"
 )
@@ -59,11 +61,17 @@ factory journal [flags …] [project] [key=value …]`,
 				return err
 			}
 		}
-		j, err := journaleux.New(target, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(target, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
-		h, err := j.Project(project).Hello()
+
+		t, err := url.Parse(target)
+		if err != nil {
+			return err
+		}
+		j := journaleux.New(f.Project(project), t)
+		h, err := j.Hello()
 		if err != nil {
 			return err
 		}
@@ -75,7 +83,7 @@ factory journal [flags …] [project] [key=value …]`,
 				return err
 			}
 		}
-		j.Project(project).Logs(&journaleux.LogsOpt{
+		j.Logs(&journaleux.LogsOpt{
 			Project: project,
 			Lines:   lines,
 			Follow:  follow,
