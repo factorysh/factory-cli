@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
+	"gitlab.bearstech.com/factory/factory-cli/factory"
 	__gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
@@ -95,7 +96,10 @@ var projectTargetCmd = &cobra.Command{
 		if len(args) == 0 {
 			return fmt.Errorf("[project] environment")
 		}
-		var project, environment string
+		var (
+			project, environment string
+			err                  error
+		)
 		if len(args) == 1 {
 			_, project, err = __gitlab.GitRemote()
 			if err != nil {
@@ -106,15 +110,15 @@ var projectTargetCmd = &cobra.Command{
 			project = args[0]
 			environment = args[1]
 		}
-		gitlab, err := guessGitlab()
+		f, err := factory.New(gitlab, os.Getenv("PRIVATE_TOKEN"))
+		if err != nil {
+			return err
+		}
+		t, err := signpost.New(f.Project(project)).Target(environment)
 		if err != nil {
 			return nil
 		}
-		bastion, err := signpost.WhereIsTheBastion(project, environment)
-		if err != nil {
-			return nil
-		}
-		fmt.Println(bastion)
+		fmt.Println(t)
 		return nil
 	},
 }
