@@ -28,3 +28,7 @@ bin:
   stage: bin
   script:
     - bin/factory -h
+  cache:
+    paths:
+      - vendor
+      - bin
