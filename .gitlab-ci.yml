@@ -3,6 +3,7 @@
 stages:
   - build
   - test
+  - bin
 
 build:
   stage: build
@@ -22,3 +23,8 @@ test:
     paths:
       - vendor
       - bin
+
+bin:
+  stage: bin
+  script:
+    - bin/factory -h
