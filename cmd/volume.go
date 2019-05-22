@@ -14,11 +14,11 @@ import (
 
 func init() {
 	_, project_path, _ := _gitlab.GitRemote()
+	sftpCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	sftpCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	volumeCmd.AddCommand(sftpCmd)
 
-	volumeCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
-	volumeCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	rootCmd.AddCommand(volumeCmd)
 }
 
@@ -40,7 +40,12 @@ var sftpCmd = &cobra.Command{
 	Use:   "sftp",
 	Short: "sftp to project's volumes",
 	Long:  `sftp to project's volumes`,
-	Args:  cobra.NoArgs,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if project == "" {
+			return errors.New("please specify a project with -P")
+		}
+		return cobra.NoArgs(cmd, args)
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if verbose {
 			log.SetLevel(log.DebugLevel)

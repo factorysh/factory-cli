@@ -19,11 +19,11 @@ var (
 
 func init() {
 	_, project_path, _ := _gitlab.GitRemote()
+	execCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	execCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
-	containerCmd.AddCommand(execCmd)
+	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
-	containerCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
-	containerCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
+	containerCmd.AddCommand(execCmd)
 	rootCmd.AddCommand(containerCmd)
 }
 
@@ -48,6 +48,9 @@ var execCmd = &cobra.Command{
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			return errors.New("you must specify a service")
+		}
+		if project == "" {
+			return errors.New("please specify a project with -P")
 		}
 		return nil
 	},
