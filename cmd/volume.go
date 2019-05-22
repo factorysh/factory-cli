@@ -40,6 +40,7 @@ var sftpCmd = &cobra.Command{
 	Use:   "sftp",
 	Short: "sftp to project's volumes",
 	Long:  `sftp to project's volumes`,
+	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if verbose {
 			log.SetLevel(log.DebugLevel)
