@@ -15,6 +15,7 @@ import (
 func init() {
 	projectCmd.AddCommand(projectLsCmd)
 	projectCmd.AddCommand(environmentsCmd)
+	projectCmd.AddCommand(projectTargetCmd)
 	rootCmd.AddCommand(projectCmd)
 }
 
@@ -96,9 +97,12 @@ var projectTargetCmd = &cobra.Command{
 		if len(args) == 0 {
 			return fmt.Errorf("[project] environment")
 		}
+		gitlab, err := guessGitlab()
+		if err != nil {
+			return nil
+		}
 		var (
 			project, environment string
-			err                  error
 		)
 		if len(args) == 1 {
 			_, project, err = __gitlab.GitRemote()
@@ -110,6 +114,10 @@ var projectTargetCmd = &cobra.Command{
 			project = args[0]
 			environment = args[1]
 		}
+		log.WithField("project", project).
+			WithField("environment", environment).
+			WithField("gitlab", gitlab).
+			Debug()
 		f, err := factory.New(gitlab, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
