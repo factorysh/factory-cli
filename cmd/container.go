@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,18 +19,38 @@ var (
 
 func init() {
 	_, project_path, _ := _gitlab.GitRemote()
-	containerCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
-	containerCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
+	execCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	containerCmd.AddCommand(execCmd)
+
 	containerCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
+	containerCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	rootCmd.AddCommand(containerCmd)
 }
 
 var containerCmd = &cobra.Command{
 	Use:   "container",
 	Short: "Do something on a container",
-	Long: `"Do something on a container.
-factory container exec service`,
+	Long:  `Do something on a container.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if verbose {
+			log.SetLevel(log.DebugLevel)
+		} else {
+			log.SetLevel(log.InfoLevel)
+		}
+		return errors.New("you must use a subcommand: exec")
+	},
+}
 
+var execCmd = &cobra.Command{
+	Use:   "exec service [command]",
+	Short: "Exec a command in a container",
+	Long:  `Exec a command in a container. Default to bash`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return errors.New("you must specify a service")
+		}
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if verbose {
 			log.SetLevel(log.DebugLevel)
@@ -44,8 +65,12 @@ factory container exec service`,
 			"ssh",
 			"-a", "-x", "-t", "-p", "2222",
 			"-l", user, target,
-			"exec", "web", "bash",
+			"exec",
 		}
+		if len(args) < 1 {
+			args = []string{args[0], "bash"}
+		}
+		command = append(command, args...)
 
 		log.Debug(command)
 		if dry_run {
