@@ -7,6 +7,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func ReadJson(resp *http.Response, value interface{}) error {
@@ -31,7 +33,13 @@ func ReadJson(resp *http.Response, value interface{}) error {
 	defer reader.Close()
 	raw, err := ioutil.ReadAll(reader)
 	if err != nil {
+		log.WithField("raw", string(raw))
 		return err
 	}
-	return json.Unmarshal(raw, value)
+	err = json.Unmarshal(raw, value)
+	if err != nil {
+		log.WithField("raw", string(raw)).WithError(err).Error()
+		return err
+	}
+	return nil
 }
