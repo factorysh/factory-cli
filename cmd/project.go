@@ -124,7 +124,7 @@ var projectTargetCmd = &cobra.Command{
 		}
 		t, err := signpost.New(f.Project(project)).Target(environment)
 		if err != nil {
-			return nil
+			return err
 		}
 		fmt.Println(t)
 		return nil
