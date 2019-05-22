@@ -27,11 +27,6 @@ var volumeCmd = &cobra.Command{
 	Short: "Do something on a volume",
 	Long:  `Do something on a volume.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		} else {
-			log.SetLevel(log.InfoLevel)
-		}
 		return errors.New("you must use a subcommand: sftp")
 	},
 }
@@ -47,11 +42,6 @@ var sftpCmd = &cobra.Command{
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		} else {
-			log.SetLevel(log.InfoLevel)
-		}
 		log.Debug(project)
 		log.Debug(target)
 

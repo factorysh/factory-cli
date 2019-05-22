@@ -65,7 +65,14 @@ func guessGitlab() (string, error) {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig,
+		func() {
+			if verbose {
+				log.SetLevel(log.DebugLevel)
+			} else {
+				log.SetLevel(log.InfoLevel)
+			}
+		})
 	filenameHook := filename.NewHook()
 	log.AddHook(filenameHook)
 

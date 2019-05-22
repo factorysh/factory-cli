@@ -42,11 +42,6 @@ var journalCmd = &cobra.Command{
 factory journal [flags …] [project] [key=value …]`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		} else {
-			log.SetLevel(log.InfoLevel)
-		}
 		var (
 			project string
 			err     error

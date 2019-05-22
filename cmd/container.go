@@ -32,11 +32,6 @@ var containerCmd = &cobra.Command{
 	Short: "Do something on a container",
 	Long:  `Do something on a container.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		} else {
-			log.SetLevel(log.InfoLevel)
-		}
 		return errors.New("you must use a subcommand: exec")
 	},
 }
@@ -55,11 +50,6 @@ var execCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if verbose {
-			log.SetLevel(log.DebugLevel)
-		} else {
-			log.SetLevel(log.InfoLevel)
-		}
 		log.Debug(project)
 		log.Debug(target)
 
