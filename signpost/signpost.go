@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
+	log "github.com/sirupsen/logrus"
+
 	"gitlab.bearstech.com/factory/factory-cli/client"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
 )
@@ -24,23 +26,34 @@ type Target struct {
 }
 
 func (s *SignPost) Target(environment string) (*url.URL, error) {
-	req, err := http.NewRequest("GET",
-		fmt.Sprintf("%s/api/factory/v1/projects/%s/environments/%s",
-			s.project.Factory().Target().String(),
-			s.project.Id(),
-			environment), nil)
+	u := fmt.Sprintf("%s/api/factory/v1/projects/%s/environments/%s",
+		s.project.Factory().Target().String(),
+		s.project.Id(),
+		environment)
+	l := log.WithField("url", u)
+	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
+		l.WithError(err).Error()
 		return nil, err
 	}
 	resp, err := s.project.Session().Do(req)
 	if err != nil {
+		l.WithError(err).Error()
 		return nil, err
 	}
+	l = l.WithField("status", resp.Status)
 	var t *Target
 	err = client.ReadJson(resp, &t)
 	if err != nil {
+		l.WithError(err).Error()
 		return nil, err
 	}
-	u, err := url.Parse(t.Target)
-	return u, err
+	l = l.WithField("target", t.Target)
+	r, err := url.Parse(t.Target)
+	if err != nil {
+		l.WithError(err).Error()
+		return nil, err
+	}
+	l.Debug()
+	return r, nil
 }
