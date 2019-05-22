@@ -1,6 +1,7 @@
 package factory
 
 import (
+	"fmt"
 	"net/url"
 
 	"gitlab.bearstech.com/factory/factory-cli/client"
@@ -13,7 +14,7 @@ type Factory struct {
 }
 
 func New(target, privateToken string) (*Factory, error) {
-	t, err := url.Parse(target)
+	t, err := url.Parse(fmt.Sprintf("https://%s", target))
 	if err != nil {
 		return nil, err
 	}
