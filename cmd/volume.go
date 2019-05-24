@@ -9,12 +9,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 )
 
 func init() {
-	_, project_path, _ := _gitlab.GitRemote()
-	sftpCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	sftpCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	volumeCmd.AddCommand(sftpCmd)

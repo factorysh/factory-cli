@@ -9,17 +9,13 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 )
 
 var (
-	project string
 	dry_run bool
 )
 
 func init() {
-	_, project_path, _ := _gitlab.GitRemote()
-	execCmd.PersistentFlags().StringVarP(&project, "project", "P", project_path, "Project")
 	execCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 

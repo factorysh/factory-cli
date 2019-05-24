@@ -8,25 +8,25 @@ import (
 )
 
 type Factory struct {
-	target       *url.URL
+	gitlab_url   *url.URL
 	privateToken string
 	projects     map[string]*Project
 }
 
-func New(target, privateToken string) (*Factory, error) {
-	t, err := url.Parse(fmt.Sprintf("https://%s", target))
+func New(gitlab_url, privateToken string) (*Factory, error) {
+	t, err := url.Parse(fmt.Sprintf("https://%s", gitlab_url))
 	if err != nil {
 		return nil, err
 	}
 	return &Factory{
-		target:       t,
+		gitlab_url:   t,
 		privateToken: privateToken,
 		projects:     make(map[string]*Project),
 	}, nil
 }
 
-func (f *Factory) Target() *url.URL {
-	return f.target
+func (f *Factory) GitlabUrl() *url.URL {
+	return f.gitlab_url
 }
 
 func (f *Factory) Project(project string) *Project {

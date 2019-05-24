@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
-	__gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
@@ -30,11 +29,7 @@ var projectLsCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		gitlab, err := guessGitlab()
-		if err != nil {
-			return nil
-		}
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab))
+		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab_url))
 		page := 0
 		for {
 			opts := &_gitlab.ListProjectsOptions{
@@ -64,20 +59,7 @@ var environmentsCmd = &cobra.Command{
 	Short: "Show environments",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		gitlab, err := guessGitlab()
-		if err != nil {
-			return nil
-		}
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab))
-		var project string
-		if len(args) > 0 {
-			project = args[0]
-		} else {
-			_, project, err = __gitlab.GitRemote()
-			if err != nil {
-				return err
-			}
-		}
+		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab_url))
 		log.Debug(project)
 		environments, _, err := git.Environments.ListEnvironments(project, &_gitlab.ListEnvironmentsOptions{})
 		if err != nil {
@@ -97,28 +79,12 @@ var projectTargetCmd = &cobra.Command{
 		if len(args) == 0 {
 			return fmt.Errorf("[project] environment")
 		}
-		gitlab, err := guessGitlab()
-		if err != nil {
-			return nil
-		}
-		var (
-			project, environment string
-		)
-		if len(args) == 1 {
-			_, project, err = __gitlab.GitRemote()
-			if err != nil {
-				return err
-			}
-			environment = args[0]
-		} else {
-			project = args[0]
-			environment = args[1]
-		}
+		environment := args[0]
 		log.WithField("project", project).
 			WithField("environment", environment).
-			WithField("gitlab", gitlab).
+			WithField("gitlab_url", gitlab_url).
 			Debug()
-		f, err := factory.New(gitlab, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}

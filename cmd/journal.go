@@ -12,7 +12,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
-	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/journaleux"
 )
 
@@ -43,20 +42,13 @@ factory journal [flags …] [project] [key=value …]`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
-			project string
-			err     error
+			err error
 		)
-		project, fields, err := guessArgs(args)
+		fields, err := guessArgs(args)
 		if err != nil {
 			return err
 		}
-		if project == "" {
-			_, project, err = _gitlab.GitRemote()
-			if err != nil {
-				return err
-			}
-		}
-		f, err := factory.New(target, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
@@ -115,21 +107,17 @@ factory journal [flags …] [project] [key=value …]`,
 	},
 }
 
-func guessArgs(args []string) (project string, fields map[string]string, err error) {
+func guessArgs(args []string) (fields map[string]string, err error) {
 	if len(args) == 0 {
-		return "", nil, nil
+		return nil, nil
 	}
 	fields = make(map[string]string)
-	if strings.IndexByte(args[0], '=') == -1 {
-		project = args[0]
-		args = args[1:]
-	}
 	for _, arg := range args {
 		kv := strings.SplitN(arg, "=", 2)
 		if len(kv) != 2 {
-			return "", nil, fmt.Errorf("Bad key=value format: %v", arg)
+			return nil, fmt.Errorf("Bad key=value format: %v", arg)
 		}
 		fields[kv[0]] = kv[1]
 	}
-	return project, fields, nil
+	return fields, nil
 }

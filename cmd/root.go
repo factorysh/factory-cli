@@ -27,9 +27,10 @@ import (
 )
 
 var (
-	cfgFile string
-	gitlab  string
-	verbose bool
+	cfgFile    string
+	gitlab_url string
+	project    string
+	verbose    bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -56,14 +57,6 @@ func Execute() {
 	}
 }
 
-func guessGitlab() (string, error) {
-	if gitlab != "" {
-		return gitlab, nil
-	}
-	server, _, err := _gitlab.GitRemote()
-	return server, err
-}
-
 func init() {
 	cobra.OnInitialize(initConfig,
 		func() {
@@ -79,8 +72,10 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
+	default_gitlab, default_project, _ := _gitlab.GitRemote()
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&gitlab, "gitlab", "g", "", "Gitlab server")
+	rootCmd.PersistentFlags().StringVarP(&gitlab_url, "gitlab", "g", default_gitlab, "Gitlab server")
+	rootCmd.PersistentFlags().StringVarP(&project, "project", "P", default_project, "Project")
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output")
 }
 

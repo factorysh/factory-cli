@@ -27,7 +27,7 @@ type Target struct {
 
 func (s *SignPost) Target(environment string) (*url.URL, error) {
 	u := fmt.Sprintf("%s/api/factory/v1/projects/%s/environments/%s",
-		s.project.Factory().Target().String(),
+		s.project.Factory().GitlabUrl().String(),
 		s.project.Id(),
 		environment)
 	l := log.WithField("url", u)
