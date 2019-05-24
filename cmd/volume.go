@@ -9,10 +9,16 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"gitlab.bearstech.com/factory/factory-cli/factory"
+	"gitlab.bearstech.com/factory/factory-cli/signpost"
+)
+
+var (
+	environment string
 )
 
 func init() {
-	sftpCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	sftpCmd.PersistentFlags().StringVarP(&environment, "environment", "E", "", "Environment")
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	volumeCmd.AddCommand(sftpCmd)
 
@@ -42,11 +48,21 @@ var sftpCmd = &cobra.Command{
 		log.Debug(project)
 		log.Debug(target)
 
+		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		if err != nil {
+			return err
+		}
+		s := signpost.New(f.Project(project))
+		u, err := s.Target(environment)
+		if err != nil {
+			return err
+		}
+
 		user := strings.Replace(project, "/", "-", -1)
 		command := []string{
 			"sftp",
 			"-P", "2222",
-			user + "@" + target,
+			user + "@" + u.Host,
 		}
 		command = append(command, args...)
 

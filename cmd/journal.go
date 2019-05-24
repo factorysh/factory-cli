@@ -38,7 +38,7 @@ var journalCmd = &cobra.Command{
 	Use:   "journal",
 	Short: "Show journal",
 	Long: `Show journal of a project.
-factory journal [flags …] [project] [key=value …]`,
+factory journal [flags …] [key=value …]`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var (

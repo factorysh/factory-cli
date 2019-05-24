@@ -14,12 +14,12 @@ type Factory struct {
 }
 
 func New(gitlab_url, privateToken string) (*Factory, error) {
-	t, err := url.Parse(fmt.Sprintf("https://%s", gitlab_url))
+	u, err := url.Parse(fmt.Sprintf("https://%s", gitlab_url))
 	if err != nil {
 		return nil, err
 	}
 	return &Factory{
-		gitlab_url:   t,
+		gitlab_url:   u,
 		privateToken: privateToken,
 		projects:     make(map[string]*Project),
 	}, nil
