@@ -43,6 +43,9 @@ var journalCmd = &cobra.Command{
 factory journal [flags …] [key=value …]`,
 
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if environment == "" {
+			return fmt.Errorf(("-e option is mandatory"))
+		}
 		var (
 			err error
 		)
