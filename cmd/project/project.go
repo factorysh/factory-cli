@@ -2,13 +2,11 @@ package project
 
 import (
 	"fmt"
-	"os"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
 	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
@@ -28,9 +26,10 @@ var projectLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List projects",
 	RunE: func(cmd *cobra.Command, args []string) error {
-
-		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", root.GitlabUrl))
+		git, err := root.GitlabClient()
+		if err != nil {
+			return err
+		}
 		page := 0
 		for {
 			opts := &_gitlab.ListProjectsOptions{
@@ -59,8 +58,10 @@ var environmentsCmd = &cobra.Command{
 	Use:   "environments",
 	Short: "Show environments",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", root.GitlabUrl))
+		git, err := root.GitlabClient()
+		if err != nil {
+			return err
+		}
 		log.Debug(root.Project)
 		environments, _, err := git.Environments.ListEnvironments(root.Project, &_gitlab.ListEnvironmentsOptions{})
 		if err != nil {
@@ -86,7 +87,7 @@ var projectTargetCmd = &cobra.Command{
 			WithField("environment", environment).
 			WithField("gitlab_url", root.GitlabUrl).
 			Debug()
-		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
+		f, err := root.Factory()
 		if err != nil {
 			return err
 		}

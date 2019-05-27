@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -12,7 +11,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/journaleux"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
@@ -52,18 +50,13 @@ factory journal [flags …] [key=value …]`,
 		if err != nil {
 			return err
 		}
-		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
+		f, err := root.Factory()
 		if err != nil {
 			return err
 		}
 
 		var t *url.URL
 		if target == "" {
-
-			f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
-			if err != nil {
-				return err
-			}
 			t, err := signpost.New(f.Project(root.Project)).Target(environment)
 			if err != nil {
 				return err

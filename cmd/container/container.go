@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
@@ -56,7 +55,7 @@ var execCmd = &cobra.Command{
 		log.Debug(root.Project)
 		log.Debug(target)
 
-		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
+		f, err := root.Factory()
 		if err != nil {
 			return err
 		}

@@ -17,6 +17,7 @@ package root
 import (
 	"fmt"
 	"os"
+	"net/http"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/onrik/logrus/filename"
@@ -31,6 +32,7 @@ var (
 	GitlabUrl string
 	Project   string
 	Verbose   bool
+	client *http.Client
 )
 
 // RootCmd represents the base command when called without any subcommands
