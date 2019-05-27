@@ -70,6 +70,8 @@ factory journal [flags …] [key=value …]`,
 				return err
 			}
 		}
+		t.Host = fmt.Sprintf("%s:5000", t.Hostname())
+		log.Debug("target: ", t.Host)
 		j := journaleux.New(f.Project(root.Project), t)
 		h, err := j.Hello()
 		if err != nil {
