@@ -55,6 +55,9 @@ func (s *Session) getMe(_url string) (string, error) {
 }
 
 func (s *Session) getToken(realm string) (string, error) {
+	if !strings.HasPrefix(realm, "http") {
+		realm = "https://" + realm
+	}
 	l := log.WithField("realm", realm)
 	u, err := url.Parse(realm)
 	if err != nil {

@@ -45,6 +45,7 @@ var sftpCmd = &cobra.Command{
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		log.Debug(gitlab_url)
 		log.Debug(project)
 		log.Debug(target)
 
