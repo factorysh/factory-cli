@@ -21,7 +21,7 @@ var (
 )
 
 func init() {
-	execCmd.PersistentFlags().StringVarP(&environment, "environment", "E", "", "Environment")
+	execCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
 	containerCmd.AddCommand(execCmd)
@@ -43,7 +43,7 @@ var execCmd = &cobra.Command{
 			return errors.New("you must specify a service")
 		}
 		if root.Project == "" {
-			return errors.New("please specify a project with -P")
+			return errors.New("please specify a project with -p")
 		}
 		return nil
 	},

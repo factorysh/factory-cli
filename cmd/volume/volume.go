@@ -38,7 +38,7 @@ var sftpCmd = &cobra.Command{
 	Long:  `sftp to project's volumes`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if root.Project == "" {
-			return errors.New("please specify a project with -P")
+			return errors.New("please specify a project with -p")
 		}
 		return cobra.NoArgs(cmd, args)
 	},
