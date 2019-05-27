@@ -11,14 +11,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:810a081d6644e37bad5c9285d4b0d641a2d069bfdfeb539c01d82da5f5de5fe5"
+  digest = "1:94c15c8ae2f13339bbf9dd501689892ecf3adf02ac707ffe58c1503fc8da18a5"
   name = "github.com/factorysh/go-longrun"
   packages = [
     "longrun/sse",
     "run",
   ]
   pruneopts = ""
-  revision = "cc206506f923ec47264943b41d98c2db6983eb48"
+  revision = "f54a1941de7e1ebbc5f3301e29c87a3f875c23b8"
 
 [[projects]]
   digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
@@ -136,12 +136,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:631ea4a52a20ca54eceb1077e8c7e553a4f86a58639824825d9259374f7c362f"
+  digest = "1:1a405cddcf3368445051fb70ab465ae99da56ad7be8d8ca7fc52159d1c2d873c"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   pruneopts = ""
-  revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
-  version = "v1.4.1"
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:956f655c87b7255c6b1ae6c203ebb0af98cf2a13ef2507e34c9bf1c0332ac0f5"
@@ -163,12 +163,12 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:a1403cc8a94b8d7956ee5e9694badef0e7b051af289caad1cf668331e3ffa4f6"
+  digest = "1:78715f4ed019d19795e67eed1dc63f525461d925616b1ed02b72582c01362440"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = ""
-  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
-  version = "v0.0.3"
+  revision = "67fc4837d267bc9bfd6e47f77783fcc3dffc68de"
+  version = "v0.0.4"
 
 [[projects]]
   digest = "1:cc15ae4fbdb02ce31f3392361a70ac041f4f02e0485de8ffac92bd8033e3d26e"
@@ -212,33 +212,33 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:aa38821ad1406a84f9577465ef53e56ca4d90745a710c753190bf7792d726c82"
+  digest = "1:3fcc745bd071aa073bd666e01ff8df5fc72ab15f493ae7246710c66c738aab45"
   name = "golang.org/x/net"
   packages = [
     "context",
     "context/ctxhttp",
   ]
   pruneopts = ""
-  revision = "3ec19112720433827bbce8be9342797f5a6aaaf9"
+  revision = "f3200d17e092c607f615320ecaad13d87ad9a2b3"
 
 [[projects]]
   branch = "master"
-  digest = "1:348696484a568aa816b0aa29d4924afa1a4e5492e29a003eaf365f650a53c7b4"
+  digest = "1:fbb273eaa6359acf017f155480c5c68862f9c29728c798fbc620691a0495b2d6"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = ""
-  revision = "9f3314589c9a9136388751d9adae6b0ed400978a"
+  revision = "aaccbc9213b0974828f81aaac109d194880e3014"
 
 [[projects]]
   branch = "master"
-  digest = "1:677902b7cbbfa124deba62fc56aaa9ec7ad76ab7c45d42f76c973d3e7a1ef109"
+  digest = "1:e58995028b90bb1d69bf0968e3f8c2543d5a9db78d1206c2b3d2571a0b8b4a88"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = ""
-  revision = "61b9204099cb1bebc803c9ffb9b2d3acd9d457d9"
+  revision = "9cd6430ef91e39e1a0ec0470cf1321a33ef1b887"
 
 [[projects]]
   digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
