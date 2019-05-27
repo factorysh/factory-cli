@@ -18,9 +18,12 @@ type Session struct {
 	headers      http.Header
 }
 
-func New(project string, privateToken string) *Session {
+func New(client *http.Client, project string, privateToken string) *Session {
+	if client == nil {
+		client = &http.Client{}
+	}
 	s := &Session{
-		client:       &http.Client{},
+		client:       client,
 		project:      project,
 		privateToken: privateToken,
 		headers:      make(http.Header),

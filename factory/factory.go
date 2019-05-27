@@ -2,24 +2,26 @@ package factory
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
 
 	"gitlab.bearstech.com/factory/factory-cli/client"
 )
 
 type Factory struct {
+	client       *http.Client
 	gitlab_url   *url.URL
 	privateToken string
 	projects     map[string]*Project
 }
 
-
-func New(gitlab_url, privateToken string) (*Factory, error) {
+func New(client *http.Client, gitlab_url, privateToken string) (*Factory, error) {
 	u, err := url.Parse(fmt.Sprintf("https://%s", gitlab_url))
 	if err != nil {
 		return nil, err
 	}
 	return &Factory{
+		client:       client,
 		gitlab_url:   u,
 		privateToken: privateToken,
 		projects:     make(map[string]*Project),
@@ -38,7 +40,7 @@ func (f *Factory) Project(project string) *Project {
 	f.projects[project] = &Project{
 		factory: f,
 		name:    project,
-		session: client.New(project, f.privateToken),
+		session: client.New(f.client, project, f.privateToken),
 	}
 	return f.projects[project]
 }

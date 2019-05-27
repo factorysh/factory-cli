@@ -7,5 +7,5 @@ import (
 )
 
 func Factory() (*factory.Factory, error) {
-	return factory.New(GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
+	return factory.New(client, GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
 }

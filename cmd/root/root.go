@@ -16,8 +16,8 @@ package root
 
 import (
 	"fmt"
-	"os"
 	"net/http"
+	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/onrik/logrus/filename"
@@ -32,7 +32,7 @@ var (
 	GitlabUrl string
 	Project   string
 	Verbose   bool
-	client *http.Client
+	client    *http.Client
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -79,6 +79,8 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server")
 	RootCmd.PersistentFlags().StringVarP(&Project, "project", "P", default_project, "Project")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
+
+	client = &http.Client{}
 }
 
 // initConfig reads in config file and ENV variables if set.
