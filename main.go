@@ -14,8 +14,14 @@
 
 package main
 
-import "gitlab.bearstech.com/factory/factory-cli/cmd"
+import (
+	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
+	_ "gitlab.bearstech.com/factory/factory-cli/cmd/journal" // journal commands
+	_ "gitlab.bearstech.com/factory/factory-cli/cmd/volume" // volume commands
+	_ "gitlab.bearstech.com/factory/factory-cli/cmd/container" // container commands
+	_ "gitlab.bearstech.com/factory/factory-cli/cmd/project" // project commands
+)
 
 func main() {
-	cmd.Execute()
+	root.Execute()
 }

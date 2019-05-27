@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmd
+package root
 
 import (
 	"fmt"
@@ -27,14 +27,14 @@ import (
 )
 
 var (
-	cfgFile    string
-	gitlab_url string
-	project    string
-	verbose    bool
+	cfgFile   string
+	GitlabUrl string
+	Project   string
+	Verbose   bool
 )
 
 // RootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "factory-cli",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		log.WithError(err).Error()
 		os.Exit(1)
 	}
@@ -60,7 +60,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig,
 		func() {
-			if verbose {
+			if Verbose {
 				log.SetLevel(log.DebugLevel)
 			} else {
 				log.SetLevel(log.InfoLevel)
@@ -73,10 +73,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	default_gitlab, default_project, _ := _gitlab.GitRemote()
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&gitlab_url, "gitlab", "g", default_gitlab, "Gitlab server")
-	rootCmd.PersistentFlags().StringVarP(&project, "project", "P", default_project, "Project")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
+	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server")
+	RootCmd.PersistentFlags().StringVarP(&Project, "project", "P", default_project, "Project")
+	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -1,4 +1,4 @@
-package cmd
+package journal
 
 import (
 	"encoding/json"
@@ -11,27 +11,31 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/journaleux"
+	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
-	lines     int
-	target    string
-	format    string
-	timestamp bool
-	follow    bool
-	re        string
+	lines       int
+	target      string
+	format      string
+	timestamp   bool
+	follow      bool
+	re          string
+	environment string
 )
 
 func init() {
 	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
-	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "", "Address of Journaleux service")
 	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json|jsonpretty")
 	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
 	journalCmd.PersistentFlags().BoolVarP(&follow, "follow", "f", false, "Follow")
 	journalCmd.PersistentFlags().StringVarP(&re, "regexp", "r", "", "Regular expression filter")
-	rootCmd.AddCommand(journalCmd)
+	journalCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
+	root.RootCmd.AddCommand(journalCmd)
 }
 
 var journalCmd = &cobra.Command{
@@ -48,16 +52,30 @@ factory journal [flags …] [key=value …]`,
 		if err != nil {
 			return err
 		}
-		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
 
-		t, err := url.Parse(target)
-		if err != nil {
-			return err
+		var t *url.URL
+		if target == "" {
+
+			f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
+			if err != nil {
+				return err
+			}
+			t, err := signpost.New(f.Project(root.Project)).Target(environment)
+			if err != nil {
+				return err
+			}
+			fmt.Println(t)
+		} else {
+			t, err = url.Parse(target)
+			if err != nil {
+				return err
+			}
 		}
-		j := journaleux.New(f.Project(project), t)
+		j := journaleux.New(f.Project(root.Project), t)
 		h, err := j.Hello()
 		if err != nil {
 			return err
@@ -71,7 +89,7 @@ factory journal [flags …] [key=value …]`,
 			}
 		}
 		j.Logs(&journaleux.LogsOpt{
-			Project: project,
+			Project: root.Project,
 			Lines:   lines,
 			Follow:  follow,
 			Regexp:  re,

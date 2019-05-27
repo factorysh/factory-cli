@@ -1,4 +1,4 @@
-package cmd
+package project
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
+	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
@@ -15,7 +16,7 @@ func init() {
 	projectCmd.AddCommand(projectLsCmd)
 	projectCmd.AddCommand(environmentsCmd)
 	projectCmd.AddCommand(projectTargetCmd)
-	rootCmd.AddCommand(projectCmd)
+	root.RootCmd.AddCommand(projectCmd)
 }
 
 var projectCmd = &cobra.Command{
@@ -29,7 +30,7 @@ var projectLsCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab_url))
+		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", root.GitlabUrl))
 		page := 0
 		for {
 			opts := &_gitlab.ListProjectsOptions{
@@ -59,12 +60,13 @@ var environmentsCmd = &cobra.Command{
 	Short: "Show environments",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		git := _gitlab.NewClient(nil, os.Getenv("PRIVATE_TOKEN"))
-		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", gitlab_url))
-		log.Debug(project)
-		environments, _, err := git.Environments.ListEnvironments(project, &_gitlab.ListEnvironmentsOptions{})
+		git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", root.GitlabUrl))
+		log.Debug(root.Project)
+		environments, _, err := git.Environments.ListEnvironments(root.Project, &_gitlab.ListEnvironmentsOptions{})
 		if err != nil {
 			return err
 		}
+		log.Debug("environments: ", len(environments))
 		for _, env := range environments {
 			fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
 		}
@@ -80,15 +82,15 @@ var projectTargetCmd = &cobra.Command{
 			return fmt.Errorf("[project] environment")
 		}
 		environment := args[0]
-		log.WithField("project", project).
+		log.WithField("project", root.Project).
 			WithField("environment", environment).
-			WithField("gitlab_url", gitlab_url).
+			WithField("gitlab_url", root.GitlabUrl).
 			Debug()
-		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
-		t, err := signpost.New(f.Project(project)).Target(environment)
+		t, err := signpost.New(f.Project(root.Project)).Target(environment)
 		if err != nil {
 			return err
 		}

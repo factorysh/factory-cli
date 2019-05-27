@@ -1,4 +1,4 @@
-package cmd
+package container
 
 import (
 	"errors"
@@ -10,12 +10,15 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
+	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
-	dry_run bool
+	dry_run     bool
+	target      string
+	environment string
 )
 
 func init() {
@@ -23,7 +26,7 @@ func init() {
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
 	containerCmd.AddCommand(execCmd)
-	rootCmd.AddCommand(containerCmd)
+	root.RootCmd.AddCommand(containerCmd)
 }
 
 var containerCmd = &cobra.Command{
@@ -43,28 +46,28 @@ var execCmd = &cobra.Command{
 		if len(args) == 0 {
 			return errors.New("you must specify a service")
 		}
-		if project == "" {
+		if root.Project == "" {
 			return errors.New("please specify a project with -P")
 		}
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Debug(gitlab_url)
-		log.Debug(project)
+		log.Debug(root.GitlabUrl)
+		log.Debug(root.Project)
 		log.Debug(target)
 
-		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
-		s := signpost.New(f.Project(project))
+		s := signpost.New(f.Project(root.Project))
 		u, err := s.Target(environment)
 		if err != nil {
 			return err
 		}
 		log.Debug(u)
 
-		user := strings.Replace(project, "/", "-", -1)
+		user := strings.Replace(root.Project, "/", "-", -1)
 		command := []string{
 			"ssh",
 			"-a", "-x", "-t", "-p", "2222",

@@ -1,4 +1,4 @@
-package cmd
+package volume
 
 import (
 	"errors"
@@ -9,13 +9,14 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-
+	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
 	"gitlab.bearstech.com/factory/factory-cli/factory"
 	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
 	environment string
+	dry_run     bool
 )
 
 func init() {
@@ -23,7 +24,7 @@ func init() {
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	volumeCmd.AddCommand(sftpCmd)
 
-	rootCmd.AddCommand(volumeCmd)
+	root.RootCmd.AddCommand(volumeCmd)
 }
 
 var volumeCmd = &cobra.Command{
@@ -40,28 +41,27 @@ var sftpCmd = &cobra.Command{
 	Short: "sftp to project's volumes",
 	Long:  `sftp to project's volumes`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if project == "" {
+		if root.Project == "" {
 			return errors.New("please specify a project with -P")
 		}
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Debug(gitlab_url)
-		log.Debug(project)
-		log.Debug(target)
+		log.Debug(root.GitlabUrl)
+		log.Debug(root.Project)
 
-		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		f, err := factory.New(root.GitlabUrl, os.Getenv("PRIVATE_TOKEN"))
 		if err != nil {
 			return err
 		}
-		s := signpost.New(f.Project(project))
+		s := signpost.New(f.Project(root.Project))
 		u, err := s.Target(environment)
 		if err != nil {
 			return err
 		}
 		log.Debug(u)
 
-		user := strings.Replace(project, "/", "-", -1)
+		user := strings.Replace(root.Project, "/", "-", -1)
 		command := []string{
 			"sftp",
 			"-P", "2222",
