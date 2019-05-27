@@ -71,7 +71,7 @@ func init() {
 	default_gitlab, default_project, _ := _gitlab.GitRemote()
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server")
-	RootCmd.PersistentFlags().StringVarP(&Project, "project", "P", default_project, "Project")
+	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", default_project, "Project")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
 
 	client = &http.Client{}
