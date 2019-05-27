@@ -49,7 +49,7 @@ func (s *SignPost) Target(environment string) (*url.URL, error) {
 		return nil, err
 	}
 	l = l.WithField("target", t.Target)
-	r, err := url.Parse(t.Target)
+	r, err := url.Parse("https://" + t.Target)
 	if err != nil {
 		l.WithError(err).Error()
 		return nil, err

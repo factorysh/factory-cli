@@ -64,7 +64,7 @@ var sftpCmd = &cobra.Command{
 		command := []string{
 			"sftp",
 			"-P", "2222",
-			user + "@" + u.String(),
+			user + "@" + u.Hostname(),
 		}
 		command = append(command, args...)
 
