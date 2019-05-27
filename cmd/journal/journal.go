@@ -60,11 +60,10 @@ factory journal [flags …] [key=value …]`,
 
 		var t *url.URL
 		if target == "" {
-			t, err := signpost.New(f.Project(root.Project)).Target(environment)
+			t, err = signpost.New(f.Project(root.Project)).Target(environment)
 			if err != nil {
 				return err
 			}
-			fmt.Println(t)
 		} else {
 			t, err = url.Parse(target)
 			if err != nil {
