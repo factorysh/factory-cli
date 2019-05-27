@@ -30,9 +30,6 @@ var volumeCmd = &cobra.Command{
 	Use:   "volume",
 	Short: "Do something on a volume",
 	Long:  `Do something on a volume.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return errors.New("you must use a subcommand: sftp")
-	},
 }
 
 var sftpCmd = &cobra.Command{
