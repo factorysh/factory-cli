@@ -9,6 +9,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
+	"gitlab.bearstech.com/factory/factory-cli/factory"
+	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
@@ -16,7 +19,7 @@ var (
 )
 
 func init() {
-	execCmd.PersistentFlags().StringVarP(&target, "target", "H", "localhost", "Host")
+	execCmd.PersistentFlags().StringVarP(&environment, "environment", "E", "", "Environment")
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
 	containerCmd.AddCommand(execCmd)
@@ -46,14 +49,26 @@ var execCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		log.Debug(gitlab_url)
 		log.Debug(project)
 		log.Debug(target)
+
+		f, err := factory.New(gitlab_url, os.Getenv("PRIVATE_TOKEN"))
+		if err != nil {
+			return err
+		}
+		s := signpost.New(f.Project(project))
+		u, err := s.Target(environment)
+		if err != nil {
+			return err
+		}
+		log.Debug(u)
 
 		user := strings.Replace(project, "/", "-", -1)
 		command := []string{
 			"ssh",
 			"-a", "-x", "-t", "-p", "2222",
-			"-l", user, target,
+			"-l", user, u.Hostname(),
 			"exec",
 		}
 		if len(args) < 1 {
