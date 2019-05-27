@@ -58,12 +58,13 @@ var sftpCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+		log.Debug(u)
 
 		user := strings.Replace(project, "/", "-", -1)
 		command := []string{
 			"sftp",
 			"-P", "2222",
-			user + "@" + u.Host,
+			user + "@" + u.String(),
 		}
 		command = append(command, args...)
 
