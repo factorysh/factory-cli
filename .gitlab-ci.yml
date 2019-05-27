@@ -27,7 +27,7 @@ test:
 bin:
   stage: bin
   script:
-    - bin/factory-cli -h
+    - bin/factory -h
   cache:
     paths:
       - vendor
