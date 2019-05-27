@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	sftpCmd.PersistentFlags().StringVarP(&environment, "environment", "E", "", "Environment")
+	sftpCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	volumeCmd.AddCommand(sftpCmd)
 
