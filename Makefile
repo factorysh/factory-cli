@@ -35,6 +35,15 @@ docker-test:
 		bearstech/golang-dep \
 		make test
 
+test-sftp: docker-build
+	echo get ./data/volume/test /tmp/test | \
+		PRIVATE_TOKEN=$(PRIVATE_TOKEN) ./bin/factory \
+		volume sftp -E staging -P "factory/factory-canary"
+
+test-exec: docker-build
+	PRIVATE_TOKEN=$(PRIVATE_TOKEN) ./bin/factory \
+		container exec -P factory/factory-canary -E staging web -- ls -l
+
 clean:
 	rm -rf bin vendor
 
