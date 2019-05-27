@@ -32,9 +32,6 @@ var containerCmd = &cobra.Command{
 	Use:   "container",
 	Short: "Do something on a container",
 	Long:  `Do something on a container.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return errors.New("you must use a subcommand: exec")
-	},
 }
 
 var execCmd = &cobra.Command{
