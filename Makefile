@@ -2,7 +2,8 @@ GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 build: bin vendor
 	go build -ldflags "-X gitlab.bearstech.com/factory/gitlab-cli/version.version=$(GIT_VERSION)" \
-	-o bin/factory
+	-o bin/factory \
+	main.go
 
 bin:
 	mkdir -p bin
@@ -46,4 +47,3 @@ test-exec: docker-build
 
 clean:
 	rm -rf bin vendor
-

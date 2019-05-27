@@ -13,11 +13,11 @@
 
 [[constraint]]
   name = "github.com/onrik/logrus"
-  version = "0.3.0"
+  version = "^0.3.0"
 
 [[constraint]]
   name = "github.com/xanzy/go-gitlab"
-  version = "0.17.0"
+  version = "^0.17.0"
 
 [[constraint]]
   branch = "master"
