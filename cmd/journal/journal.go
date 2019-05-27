@@ -23,6 +23,7 @@ var (
 	follow      bool
 	re          string
 	environment string
+	fields      map[string]string
 )
 
 func init() {
@@ -37,21 +38,21 @@ func init() {
 }
 
 var journalCmd = &cobra.Command{
-	Use:   "journal",
-	Short: "Show journal",
-	Long: `Show journal of a project.
-factory journal [flags …] [key=value …]`,
-
+	Use:     "journal [key=value …]",
+	Short:   "Show journal",
+	Long:    `Show journal of a project.`,
+	Example: `factory journal -n 100 COM_DOCKER_COMPOSE_SERVICE=cron`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		var err error
+		fields, err = guessArgs(args)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if environment == "" {
 			return fmt.Errorf(("-e option is mandatory"))
-		}
-		var (
-			err error
-		)
-		fields, err := guessArgs(args)
-		if err != nil {
-			return err
 		}
 		f, err := root.Factory()
 		if err != nil {
