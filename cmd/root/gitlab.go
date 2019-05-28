@@ -5,9 +5,8 @@ import (
 	"os"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	gitlab "github.com/xanzy/go-gitlab"
-		log "github.com/sirupsen/logrus"
-
 )
 
 func GitlabClient() (*gitlab.Client, error) {
@@ -36,8 +35,11 @@ func Environments() ([]string, error) {
 	return envs, nil
 }
 
-func AssertEnvironment(environment string) error {
-	envs, err := Environments() 
+func AssertEnvironment() error {
+	if Environment != "" {
+		return nil
+	}
+	envs, err := Environments()
 	if err != nil {
 		return err
 	}

@@ -16,14 +16,13 @@ import (
 )
 
 var (
-	lines       int
-	target      string
-	format      string
-	timestamp   bool
-	follow      bool
-	re          string
-	environment string
-	fields      map[string]string
+	lines     int
+	target    string
+	format    string
+	timestamp bool
+	follow    bool
+	re        string
+	fields    map[string]string
 )
 
 func init() {
@@ -33,7 +32,7 @@ func init() {
 	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
 	journalCmd.PersistentFlags().BoolVarP(&follow, "follow", "f", false, "Follow")
 	journalCmd.PersistentFlags().StringVarP(&re, "regexp", "r", "", "Regular expression filter")
-	journalCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
+	root.FlagE(journalCmd.PersistentFlags())
 	root.RootCmd.AddCommand(journalCmd)
 }
 
@@ -43,7 +42,10 @@ var journalCmd = &cobra.Command{
 	Long:    `Show journal of a project.`,
 	Example: `factory journal -n 100 COM_DOCKER_COMPOSE_SERVICE=cron`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		var err error
+		err := root.AssertEnvironment()
+		if err != nil {
+			return err
+		}
 		fields, err = guessArgs(args)
 		if err != nil {
 			return err
@@ -51,9 +53,6 @@ var journalCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if environment == "" {
-			return fmt.Errorf(("-e option is mandatory"))
-		}
 		f, err := root.Factory()
 		if err != nil {
 			return err
@@ -61,7 +60,7 @@ var journalCmd = &cobra.Command{
 
 		var t *url.URL
 		if target == "" {
-			t, err = signpost.New(f.Project(root.Project)).Target(environment)
+			t, err = signpost.New(f.Project(root.Project)).Target(root.Environment)
 			if err != nil {
 				return err
 			}

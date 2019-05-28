@@ -18,9 +18,9 @@ var (
 )
 
 func init() {
-	root.FlagE(sftpCmd.PersistentFlags(), &environment)
+	root.FlagE(sftpCmd.PersistentFlags())
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
-	root.FlagE(volumeCmd.PersistentFlags(), &environment)
+	root.FlagE(volumeCmd.PersistentFlags())
 	volumeCmd.AddCommand(sftpCmd)
 	volumeCmd.AddCommand(urlCmd)
 
@@ -40,10 +40,10 @@ var urlCmd = &cobra.Command{
 		if root.Project == "" {
 			return errors.New("please specify a project with -p")
 		}
-		return root.AssertEnvironment(environment)
+		return root.AssertEnvironment()
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		u, err := root.SSHAddress(environment)
+		u, err := root.SSHAddress()
 		if err != nil {
 			return err
 		}
@@ -60,13 +60,13 @@ var sftpCmd = &cobra.Command{
 		if root.Project == "" {
 			return errors.New("please specify a project with -p")
 		}
-		if err := root.AssertEnvironment(environment); err != nil {
+		if err := root.AssertEnvironment(); err != nil {
 			return err
 		}
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_url, err := root.SSHAddress(environment)
+		_url, err := root.SSHAddress()
 		if err != nil {
 			return err
 		}

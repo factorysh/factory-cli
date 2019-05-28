@@ -9,7 +9,7 @@ import (
 )
 
 // SSHAddress return user@domain for an ssh connection
-func SSHAddress(environment string) (string, error) {
+func SSHAddress() (string, error) {
 	log.Debug(GitlabUrl)
 	log.Debug(Project)
 
@@ -18,7 +18,7 @@ func SSHAddress(environment string) (string, error) {
 		return "", err
 	}
 	s := signpost.New(f.Project(Project))
-	u, err := s.Target(environment)
+	u, err := s.Target(Environment)
 	if err != nil {
 		return "", err
 	}

@@ -14,13 +14,12 @@ import (
 )
 
 var (
-	dry_run     bool
-	target      string
-	environment string
+	dry_run bool
+	target  string
 )
 
 func init() {
-	root.FlagE(execCmd.PersistentFlags(), &environment)
+	root.FlagE(execCmd.PersistentFlags())
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
 	containerCmd.AddCommand(execCmd)
@@ -41,7 +40,7 @@ var execCmd = &cobra.Command{
 		if root.Project == "" {
 			return errors.New("please specify a project with -p")
 		}
-		if err := root.AssertEnvironment(environment); err != nil {
+		if err := root.AssertEnvironment(); err != nil {
 			return err
 		}
 		if len(args) == 0 {
@@ -50,7 +49,7 @@ var execCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		address, err := root.SSHAddress(environment)
+		address, err := root.SSHAddress()
 		if err != nil {
 			return err
 		}

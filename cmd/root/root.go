@@ -28,11 +28,12 @@ import (
 )
 
 var (
-	cfgFile   string
-	GitlabUrl string
-	Project   string
-	Verbose   bool
-	client    *http.Client
+	cfgFile     string
+	GitlabUrl   string
+	Project     string
+	Verbose     bool
+	Environment string
+	client      *http.Client
 )
 
 var RootCmd = &cobra.Command{
@@ -51,7 +52,6 @@ var RootCmd = &cobra.Command{
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		//log.WithError(err).Error()
 		os.Exit(1)
 	}
 }
