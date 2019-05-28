@@ -19,9 +19,11 @@ var (
 )
 
 func init() {
-	sftpCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
+	root.FlagE(sftpCmd.PersistentFlags(), &environment)
 	sftpCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
+	root.FlagE(volumeCmd.PersistentFlags(), &environment)
 	volumeCmd.AddCommand(sftpCmd)
+	volumeCmd.AddCommand(urlCmd)
 
 	root.RootCmd.AddCommand(volumeCmd)
 }
@@ -32,6 +34,43 @@ var volumeCmd = &cobra.Command{
 	Long:  `Do something on a volume.`,
 }
 
+var urlCmd = &cobra.Command{
+	Use:   "url",
+	Short: "url of the volume",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if root.Project == "" {
+			return errors.New("please specify a project with -p")
+		}
+		return root.AssertEnvironment(environment)
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		u, err := user()
+		if err != nil {
+			return err
+		}
+		fmt.Printf("sftp://%s", u)
+		return nil
+	},
+}
+
+func user() (string, error) {
+	log.Debug(root.GitlabUrl)
+	log.Debug(root.Project)
+
+	f, err := root.Factory()
+	if err != nil {
+		return "", err
+	}
+	s := signpost.New(f.Project(root.Project))
+	u, err := s.Target(environment)
+	if err != nil {
+		return "", err
+	}
+	log.Debug(u)
+	user := strings.Replace(root.Project, "/", "-", -1)
+	return fmt.Sprintf("%s@%s", user, u.Hostname()), nil
+}
+
 var sftpCmd = &cobra.Command{
 	Use:   "sftp",
 	Short: "sftp to project's volumes",
@@ -40,28 +79,21 @@ var sftpCmd = &cobra.Command{
 		if root.Project == "" {
 			return errors.New("please specify a project with -p")
 		}
+		if err := root.AssertEnvironment(environment); err != nil {
+			return err
+		}
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Debug(root.GitlabUrl)
-		log.Debug(root.Project)
-
-		f, err := root.Factory()
+		_url, err := user()
 		if err != nil {
 			return err
 		}
-		s := signpost.New(f.Project(root.Project))
-		u, err := s.Target(environment)
-		if err != nil {
-			return err
-		}
-		log.Debug(u)
 
-		user := strings.Replace(root.Project, "/", "-", -1)
 		command := []string{
 			"sftp",
 			"-P", "2222",
-			user + "@" + u.Hostname(),
+			_url,
 		}
 		command = append(command, args...)
 
