@@ -10,7 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
@@ -44,31 +43,13 @@ var urlCmd = &cobra.Command{
 		return root.AssertEnvironment(environment)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		u, err := user()
+		u, err := root.SSHAddress(environment)
 		if err != nil {
 			return err
 		}
 		fmt.Printf("sftp://%s", u)
 		return nil
 	},
-}
-
-func user() (string, error) {
-	log.Debug(root.GitlabUrl)
-	log.Debug(root.Project)
-
-	f, err := root.Factory()
-	if err != nil {
-		return "", err
-	}
-	s := signpost.New(f.Project(root.Project))
-	u, err := s.Target(environment)
-	if err != nil {
-		return "", err
-	}
-	log.Debug(u)
-	user := strings.Replace(root.Project, "/", "-", -1)
-	return fmt.Sprintf("%s@%s", user, u.Hostname()), nil
 }
 
 var sftpCmd = &cobra.Command{
@@ -85,7 +66,7 @@ var sftpCmd = &cobra.Command{
 		return cobra.NoArgs(cmd, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_url, err := user()
+		_url, err := root.SSHAddress(environment)
 		if err != nil {
 			return err
 		}

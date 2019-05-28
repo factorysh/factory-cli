@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/signpost"
 )
 
 var (
@@ -21,7 +20,7 @@ var (
 )
 
 func init() {
-	execCmd.PersistentFlags().StringVarP(&environment, "environment", "e", "", "Environment")
+	root.FlagE(execCmd.PersistentFlags(), &environment)
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 
 	containerCmd.AddCommand(execCmd)
@@ -39,35 +38,26 @@ var execCmd = &cobra.Command{
 	Short: "Exec a command in a container",
 	Long:  `Exec a command in a container. Default to bash`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return errors.New("you must specify a service")
-		}
 		if root.Project == "" {
 			return errors.New("please specify a project with -p")
+		}
+		if err := root.AssertEnvironment(environment); err != nil {
+			return err
+		}
+		if len(args) == 0 {
+			return errors.New("you must specify a service")
 		}
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Debug(root.GitlabUrl)
-		log.Debug(root.Project)
-		log.Debug(target)
-
-		f, err := root.Factory()
+		address, err := root.SSHAddress(environment)
 		if err != nil {
 			return err
 		}
-		s := signpost.New(f.Project(root.Project))
-		u, err := s.Target(environment)
-		if err != nil {
-			return err
-		}
-		log.Debug(u)
-
-		user := strings.Replace(root.Project, "/", "-", -1)
 		command := []string{
 			"ssh",
 			"-a", "-x", "-t", "-p", "2222",
-			"-l", user, u.Hostname(),
+			address,
 			"exec",
 		}
 		if len(args) < 1 {
