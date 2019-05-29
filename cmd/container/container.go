@@ -56,12 +56,13 @@ var execCmd = &cobra.Command{
 		command := []string{
 			"ssh",
 			"-a", "-x", "-t", "-p", "2222",
-			address,
-			"exec",
 		}
+
 		if len(args) < 1 {
 			args = []string{args[0], "bash"}
 		}
+		command = append(command, root.SSHArgs()...)
+		command = append(command, []string{address, "exec"}...)
 		command = append(command, args...)
 
 		log.Debug(command)

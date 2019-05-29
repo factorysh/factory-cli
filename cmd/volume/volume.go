@@ -74,8 +74,12 @@ var sftpCmd = &cobra.Command{
 		command := []string{
 			"sftp",
 			"-P", "2222",
-			_url,
 		}
+
+		command = append(command, root.SSHExtraArgs()...)
+
+		command = append(command, _url)
+
 		command = append(command, args...)
 
 		log.Debug(command)
