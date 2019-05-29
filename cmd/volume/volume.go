@@ -47,7 +47,7 @@ var urlCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("sftp://%s", u)
+		fmt.Printf("sftp://%s:2222/\n", u)
 		return nil
 	},
 }
