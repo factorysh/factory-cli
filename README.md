@@ -1,5 +1,7 @@
 # Factory-cli
 
+[![Build Status](https://drone.bearstech.com/api/badges/factorysh/factory-cli/status.svg)](https://drone.bearstech.com/factorysh/factory-cli)
+
 The cli hub for doing things with factory.
 
 Factory CLI talks to multiple services and handles redirections.
