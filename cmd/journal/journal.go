@@ -10,9 +10,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/journaleux"
-	"gitlab.bearstech.com/factory/factory-cli/signpost"
+	"github.com/factorysh/factory-cli/cmd/root"
+	"github.com/factorysh/factory-cli/journaleux"
+	"github.com/factorysh/factory-cli/signpost"
 )
 
 var (

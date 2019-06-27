@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"gitlab.bearstech.com/factory/factory-cli/client"
+	"github.com/factorysh/factory-cli/client"
 )
 
 type Factory struct {

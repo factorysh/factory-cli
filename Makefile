@@ -15,15 +15,15 @@ dep:
 
 test:
 	go test -v \
-		gitlab.bearstech.com/factory/factory-cli/client \
-		gitlab.bearstech.com/factory/factory-cli/gitlab
+		github.com/factorysh/factory-cli/client \
+		github.com/factorysh/factory-cli/gitlab
 
 docker-build:
 	docker run --rm \
 		-u `id -u` \
 		-v ~/.cache:/.cache \
-		-v `pwd`:/go/src/gitlab.bearstech.com/factory/factory-cli \
-		-w /go/src/gitlab.bearstech.com/factory/factory-cli \
+		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
+		-w /go/src/github.com/factorysh/factory-cli \
 		bearstech/golang-dep \
 		make build
 
@@ -31,8 +31,8 @@ docker-test:
 	docker run --rm \
 		-u `id -u` \
 		-v ~/.cache:/.cache \
-		-v `pwd`:/go/src/gitlab.bearstech.com/factory/factory-cli \
-		-w /go/src/gitlab.bearstech.com/factory/factory-cli \
+		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
+		-w /go/src/github.com/factorysh/factory-cli \
 		bearstech/golang-dep \
 		make test
 

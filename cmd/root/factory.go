@@ -3,7 +3,7 @@ package root
 import (
 	"os"
 
-	"gitlab.bearstech.com/factory/factory-cli/factory"
+	"github.com/factorysh/factory-cli/factory"
 )
 
 func Factory() (*factory.Factory, error) {

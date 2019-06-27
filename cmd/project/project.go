@@ -6,8 +6,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
-	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	"gitlab.bearstech.com/factory/factory-cli/signpost"
+	"github.com/factorysh/factory-cli/cmd/root"
+	"github.com/factorysh/factory-cli/signpost"
 )
 
 func init() {

@@ -15,11 +15,11 @@
 package main
 
 import (
-	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
-	_ "gitlab.bearstech.com/factory/factory-cli/cmd/journal" // journal commands
-	_ "gitlab.bearstech.com/factory/factory-cli/cmd/volume" // volume commands
-	_ "gitlab.bearstech.com/factory/factory-cli/cmd/container" // container commands
-	_ "gitlab.bearstech.com/factory/factory-cli/cmd/project" // project commands
+	"github.com/factorysh/factory-cli/cmd/root"
+	_ "github.com/factorysh/factory-cli/cmd/journal" // journal commands
+	_ "github.com/factorysh/factory-cli/cmd/volume" // volume commands
+	_ "github.com/factorysh/factory-cli/cmd/container" // container commands
+	_ "github.com/factorysh/factory-cli/cmd/project" // project commands
 )
 
 func main() {

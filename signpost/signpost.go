@@ -7,8 +7,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"gitlab.bearstech.com/factory/factory-cli/client"
-	"gitlab.bearstech.com/factory/factory-cli/factory"
+	"github.com/factorysh/factory-cli/client"
+	"github.com/factorysh/factory-cli/factory"
 )
 
 type SignPost struct {

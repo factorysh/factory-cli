@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"gitlab.bearstech.com/factory/factory-cli/version"
+	"github.com/factorysh/factory-cli/version"
 )
 
 type Session struct {

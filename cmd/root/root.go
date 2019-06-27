@@ -24,7 +24,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	_gitlab "gitlab.bearstech.com/factory/factory-cli/gitlab"
+	_gitlab "github.com/factorysh/factory-cli/gitlab"
 )
 
 var (

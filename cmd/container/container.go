@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
-	"gitlab.bearstech.com/factory/factory-cli/cmd/root"
+	"github.com/factorysh/factory-cli/cmd/root"
 )
 
 var (

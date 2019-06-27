@@ -8,8 +8,8 @@ import (
 	"net/url"
 
 	"github.com/factorysh/go-longrun/longrun/sse"
-	"gitlab.bearstech.com/factory/factory-cli/client"
-	"gitlab.bearstech.com/factory/factory-cli/factory"
+	"github.com/factorysh/factory-cli/client"
+	"github.com/factorysh/factory-cli/factory"
 )
 
 type Journaleux struct {

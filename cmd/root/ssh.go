@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"gitlab.bearstech.com/factory/factory-cli/signpost"
+	"github.com/factorysh/factory-cli/signpost"
 )
 
 // SSHAddress return user@domain for an ssh connection
