@@ -8,18 +8,37 @@ Factory CLI talks to multiple services and handles redirections.
 
 ## Commands
 
-    factory user inspect
+```
+./bin/factory
 
-    factory group ls
-    factory group inspect GROUP [GROUP...]
+ _
+| |             __            _
+| | /| /| /|   / _| __ _  ___| |_ ___  _ __ _   _
+| |/ |/ |/ |  | |_ / _' |/ __| __/ _ \| '__| | | |
+|          |  |  _| (_| | (__| || (_) | |  | |_| |
++----------+  |_|  \__,_|\___|\__\___/|_|   \__, |
+                                             |___/
 
-    factory project ls
-    factory project PROJECT service ls
-    factory project PROJECT stop
-    factory project PROJECT pause
-    factory project PROJECT unpause
-    factory project PROJECT service SERVICE logs
-    factory project PROJECT service SERVICE scale
-    factory project PROJECT container ls
+Usage:
+  factory [command]
 
-    factory container CONTAINER logs
+Available Commands:
+  container   Do something on a container
+  help        Help about any command
+  journal     Show journal
+  project     Projects subcommand
+  volume      Do something on a volume
+
+Flags:
+      --config string    config file (default is $HOME/.factory-cli.yaml)
+  -g, --gitlab string    Gitlab server (default "github.com")
+  -h, --help             help for factory
+  -p, --project string   Project (default "factorysh/factory-cli")
+  -v, --verbose          Verbose output
+
+Use "factory [command] --help" for more information about a command.
+```
+
+## Licence
+
+GPLv3 ©2019 Bearstech
