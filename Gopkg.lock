@@ -11,14 +11,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:94c15c8ae2f13339bbf9dd501689892ecf3adf02ac707ffe58c1503fc8da18a5"
+  digest = "1:e13f37de3b701e65987eee7a3724b626faec2e0a6933c302b743e8b9c44b372f"
   name = "github.com/factorysh/go-longrun"
   packages = [
     "longrun/sse",
     "run",
   ]
   pruneopts = ""
-  revision = "f54a1941de7e1ebbc5f3301e29c87a3f875c23b8"
+  revision = "3d2b34f6bc834721378f9be9bede47caab24925f"
 
 [[projects]]
   digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
@@ -163,12 +163,12 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:78715f4ed019d19795e67eed1dc63f525461d925616b1ed02b72582c01362440"
+  digest = "1:0c63b3c7ad6d825a898f28cb854252a3b29d37700c68a117a977263f5ec94efe"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = ""
-  revision = "67fc4837d267bc9bfd6e47f77783fcc3dffc68de"
-  version = "v0.0.4"
+  revision = "f2b07da1e2c38d5f12845a4f607e2e1018cbb1f5"
+  version = "v0.0.5"
 
 [[projects]]
   digest = "1:cc15ae4fbdb02ce31f3392361a70ac041f4f02e0485de8ffac92bd8033e3d26e"
@@ -212,33 +212,33 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3fcc745bd071aa073bd666e01ff8df5fc72ab15f493ae7246710c66c738aab45"
+  digest = "1:5c6b8395efd72ad4250b7747e2b1a0683c3edb7b0346a938ff45240c7ec53691"
   name = "golang.org/x/net"
   packages = [
     "context",
     "context/ctxhttp",
   ]
   pruneopts = ""
-  revision = "f3200d17e092c607f615320ecaad13d87ad9a2b3"
+  revision = "3b0461eec859c4b73bb64fdc8285971fd33e3938"
 
 [[projects]]
   branch = "master"
-  digest = "1:fbb273eaa6359acf017f155480c5c68862f9c29728c798fbc620691a0495b2d6"
+  digest = "1:01bdbbc604dcd5afb6f66a717f69ad45e9643c72d5bc11678d44ffa5c50f9e42"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = ""
-  revision = "aaccbc9213b0974828f81aaac109d194880e3014"
+  revision = "0f29369cfe4552d0e4bcddc57cc75f4d7e672a33"
 
 [[projects]]
   branch = "master"
-  digest = "1:e58995028b90bb1d69bf0968e3f8c2543d5a9db78d1206c2b3d2571a0b8b4a88"
+  digest = "1:2579a16d8afda9c9a475808c13324f5e572852e8927905ffa15bb14e71baba4f"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = ""
-  revision = "9cd6430ef91e39e1a0ec0470cf1321a33ef1b887"
+  revision = "04f50cda93cbb67f2afa353c52f342100e80e625"
 
 [[projects]]
   digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
@@ -256,7 +256,7 @@
   version = "v0.3.2"
 
 [[projects]]
-  digest = "1:01b9b21ce3c29e95c6226188ab77233e59f4e397262a078cd6f248405b86dda7"
+  digest = "1:47f391ee443f578f01168347818cb234ed819521e49e4d2c8dd2fb80d48ee41a"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -268,8 +268,8 @@
     "urlfetch",
   ]
   pruneopts = ""
-  revision = "4c25cacc810c02874000e4f7071286a8e96b2515"
-  version = "v1.6.0"
+  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:cedccf16b71e86db87a24f8d4c70b0a855872eb967cb906a66b95de56aefbd0d"
