@@ -1,7 +1,7 @@
 GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 build: bin vendor
-	go build -ldflags "-X gitlab.bearstech.com/factory/gitlab-cli/version.version=$(GIT_VERSION)" \
+	go build -ldflags "-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION)" \
 	-o bin/factory \
 	main.go
 
