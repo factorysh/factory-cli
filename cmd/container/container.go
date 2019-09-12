@@ -1,9 +1,10 @@
 package container
 
 import (
-	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -13,17 +14,20 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/factorysh/factory-cli/cmd/root"
+	"github.com/factorysh/go-longrun/longrun/sse"
 )
 
 var (
-	dry_run bool
-	target  string
+	dry_run  bool
+	download bool
+	target   string
 )
 
 func init() {
 	root.FlagE(execCmd.PersistentFlags())
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
 	root.FlagE(dumpCmd.PersistentFlags())
+	dumpCmd.PersistentFlags().BoolVarP(&download, "no-download", "", true, "Download")
 
 	containerCmd.AddCommand(execCmd)
 	containerCmd.AddCommand(dumpCmd)
@@ -113,7 +117,7 @@ var dumpCmd = &cobra.Command{
 			u.String(),
 			args[0],
 		)
-		l := log.WithField("dumpUurl", dumpUrl)
+		l := log.WithField("dumpUrl", dumpUrl)
 		req, err := http.NewRequest("GET", dumpUrl, nil)
 		if err != nil {
 			l.WithError(err).Error()
@@ -126,17 +130,67 @@ var dumpCmd = &cobra.Command{
 			return nil
 		}
 		l = l.WithField("status", resp.Status)
-		l.Debug()
-		// we should use a sse reader
-		reader := bufio.NewReader(resp.Body)
-		for {
-			line, err := reader.ReadBytes('\n')
-			if err == nil {
-				l.Debug(string(line))
-			} else {
+		filename := ""
+		defer resp.Body.Close()
+		err = sse.Reader(resp.Body, func(evt *sse.Event) error {
+			var event map[string]interface{}
+			err := json.Unmarshal([]byte(evt.Data), &event)
+			if err != nil {
 				l.WithError(err).Error()
-				return nil
+				return err
 			}
+			// filename is stored in the first debug task
+			// means that we wait for the first message like:
+			// {"result": {"msg": ""}}
+			res := event["result"]
+			if res != nil {
+				value := res.(map[string]interface{})["msg"]
+				if value != nil && filename == "" {
+					filename = value.(string)
+				}
+			}
+			return nil
+		})
+
+		if filename != "" && download {
+			// sftp the file
+			fmt.Println("Fetching", filename)
+			_url, err := root.SSHAddress()
+			if err != nil {
+				log.WithError(err).Error()
+				return err
+			}
+
+			command := []string{
+				"sftp",
+				"-P", "2222",
+			}
+
+			command = append(command, root.SSHExtraArgs()...)
+
+			command = append(command, _url)
+
+			command = append(command, args...)
+
+			log.Debug(command)
+			c := exec.Command("sftp")
+			c.Args = command
+			c.Stdout = os.Stdout
+			c.Stderr = os.Stderr
+
+			// create a pipe for the sftp "get <filename>" command
+			stdin, err := c.StdinPipe()
+			if err != nil {
+				log.WithError(err).Error()
+				return err
+			}
+			if err = c.Start(); err != nil {
+				log.WithError(err).Error()
+				return err
+			}
+			// write the command to stdin
+			io.WriteString(stdin, "get "+filename)
+			c.Wait()
 		}
 		return nil
 	},
