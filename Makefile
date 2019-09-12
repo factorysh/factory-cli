@@ -3,15 +3,10 @@ GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 GOOS?=linux
 GOARCH?=amd64
 
-build: bin vendor
+binary: bin vendor
 	go build -ldflags "-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION)" \
 	-o bin/factory \
 	main.go
-
-binaries: vendor
-	make binary GOOS=windows GOARCH=amd64
-	make binary GOOS=linux GOARCH=amd64
-	make binary GOOS=darwin GOARCH=amd64
 
 build/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION):
 	env GOOS=$(GOOS) GOARCH=$(GOARCH) \
@@ -23,7 +18,12 @@ dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz: build/factory-$(GOOS)-$(GOARCH
 	gzip -c build/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION) > \
 			dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz
 
-binary: build dist dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz
+release: build dist dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz
+
+releases: vendor
+	make release GOOS=windows GOARCH=amd64
+	make release GOOS=linux GOARCH=amd64
+	make release GOOS=darwin GOARCH=amd64
 
 bin:
 	mkdir -p bin
@@ -51,7 +51,7 @@ docker-build:
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
 		bearstech/golang-dep \
-		make build
+		make binary
 
 docker-binaries:
 	docker run --rm \
@@ -60,7 +60,7 @@ docker-binaries:
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
 		bearstech/golang-dep \
-		make binaries
+		make releases
 
 docker-test:
 	docker run --rm \
