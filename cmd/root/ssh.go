@@ -5,20 +5,29 @@ import (
 	"os"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/factorysh/factory-cli/signpost"
+	log "github.com/sirupsen/logrus"
 )
 
-// SSHAddress return user@domain for an ssh connection
-func SSHAddress() (string, error) {
+// return current Signpost
+func SignPost() (*signpost.SignPost, error) {
 	log.Debug(GitlabUrl)
 	log.Debug(Project)
 
 	f, err := Factory()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	s := signpost.New(f.Project(Project))
+	return s, nil
+}
+
+// SSHAddress return user@domain for an ssh connection
+func SSHAddress() (string, error) {
+	s, err := SignPost()
+	if err != nil {
+		return "", err
+	}
 	u, err := s.Target(Environment)
 	if err != nil {
 		return "", err

@@ -1,8 +1,10 @@
 package container
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -21,8 +23,10 @@ var (
 func init() {
 	root.FlagE(execCmd.PersistentFlags())
 	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
+	root.FlagE(dumpCmd.PersistentFlags())
 
 	containerCmd.AddCommand(execCmd)
+	containerCmd.AddCommand(dumpCmd)
 	root.RootCmd.AddCommand(containerCmd)
 }
 
@@ -77,6 +81,61 @@ var execCmd = &cobra.Command{
 			err := c.Run()
 			if err != nil {
 				return err
+			}
+		}
+		return nil
+	},
+}
+
+var dumpCmd = &cobra.Command{
+	Use:   "dump database",
+	Short: "Dump a database",
+	Long:  "Dump a database",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if root.Project == "" {
+			return errors.New("please specify a project with -p")
+		}
+		if err := root.AssertEnvironment(); err != nil {
+			return err
+		}
+		if len(args) == 0 {
+			return errors.New("you must specify a database")
+		}
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		s, err := root.SignPost()
+		if err != nil {
+			return err
+		}
+		u, err := s.EnvURL(root.Environment)
+		dumpUrl := fmt.Sprintf("%s/databases/%s/dump",
+			u.String(),
+			args[0],
+		)
+		l := log.WithField("dumpUurl", dumpUrl)
+		req, err := http.NewRequest("GET", dumpUrl, nil)
+		if err != nil {
+			l.WithError(err).Error()
+			return nil
+		}
+		req.Header.Set("Accept", "text/event-stream")
+		resp, err := s.Project.Session().Do(req)
+		if err != nil {
+			l.WithError(err).Error()
+			return nil
+		}
+		l = l.WithField("status", resp.Status)
+		l.Debug()
+		// we should use a sse reader
+		reader := bufio.NewReader(resp.Body)
+		for {
+			line, err := reader.ReadBytes('\n')
+			if err == nil {
+				l.Debug(string(line))
+			} else {
+				l.WithError(err).Error()
+				return nil
 			}
 		}
 		return nil
