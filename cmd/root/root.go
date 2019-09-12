@@ -57,7 +57,6 @@ func loadPemFromEnv() {
 	// check if we must add a CA from env
 	pemPath := os.Getenv("CA_CERTIFICAT")
 	if pemPath != "" {
-		fmt.Println("Loading", pemPath)
 		// read file
 		pemData, err := ioutil.ReadFile(pemPath)
 		if err != nil {
