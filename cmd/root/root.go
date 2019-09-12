@@ -15,16 +15,19 @@
 package root
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 
+	_gitlab "github.com/factorysh/factory-cli/gitlab"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/onrik/logrus/filename"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	_gitlab "github.com/factorysh/factory-cli/gitlab"
 )
 
 var (
@@ -50,7 +53,28 @@ var RootCmd = &cobra.Command{
 `,
 }
 
+func loadPemFromEnv() {
+	// check if we must add a CA from env
+	pemPath := os.Getenv("CA_CERTIFICAT")
+	if pemPath != "" {
+		fmt.Println("Loading", pemPath)
+		// read file
+		pemData, err := ioutil.ReadFile(pemPath)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		// append pem data to default transport's CAs
+		certs := x509.NewCertPool()
+		certs.AppendCertsFromPEM(pemData)
+		tlsConfig := &tls.Config{}
+		tlsConfig.RootCAs = certs
+		http.DefaultTransport.(*http.Transport).TLSClientConfig = tlsConfig
+	}
+}
+
 func Execute() {
+	loadPemFromEnv()
 	if err := RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
