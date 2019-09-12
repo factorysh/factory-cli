@@ -3,11 +3,11 @@ package project
 import (
 	"fmt"
 
+	"github.com/factorysh/factory-cli/cmd/root"
+	"github.com/factorysh/factory-cli/signpost"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	_gitlab "github.com/xanzy/go-gitlab"
-	"github.com/factorysh/factory-cli/cmd/root"
-	"github.com/factorysh/factory-cli/signpost"
 )
 
 func init() {
@@ -41,13 +41,13 @@ var projectLsCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
+			for _, p := range projects {
+				fmt.Println(p.PathWithNamespace)
+			}
 			if r.CurrentPage < r.TotalPages {
 				page++
 			} else {
 				break
-			}
-			for _, p := range projects {
-				fmt.Println(p.PathWithNamespace)
 			}
 		}
 		return nil
@@ -69,7 +69,11 @@ var environmentsCmd = &cobra.Command{
 		}
 		log.Debug("environments: ", len(environments))
 		for _, env := range environments {
-			fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
+			if env.ExternalURL != "" {
+				fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
+			} else {
+				fmt.Printf("%v\n", env.Name)
+			}
 		}
 		return nil
 	},
