@@ -147,6 +147,8 @@ var dumpCmd = &cobra.Command{
 				value := res.(map[string]interface{})["msg"]
 				if value != nil && filename == "" {
 					filename = value.(string)
+					l = l.WithField("filename", filename)
+					l.Debug("Got filename")
 				}
 			}
 			return nil
@@ -189,7 +191,8 @@ var dumpCmd = &cobra.Command{
 				return err
 			}
 			// write the command to stdin
-			io.WriteString(stdin, "get "+filename)
+			io.WriteString(stdin, "get /volumes/snapshots/"+filename+"\n")
+			stdin.Close()
 			c.Wait()
 		}
 		return nil
