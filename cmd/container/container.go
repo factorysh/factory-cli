@@ -25,9 +25,11 @@ var (
 
 func init() {
 	root.FlagE(execCmd.PersistentFlags())
-	execCmd.PersistentFlags().BoolVarP(&dry_run, "dry-run", "D", false, "DryRun")
+	execCmd.PersistentFlags().BoolVarP(
+		&dry_run, "dry-run", "D", false, "Only print ssh command")
 	root.FlagE(dumpCmd.PersistentFlags())
-	dumpCmd.PersistentFlags().BoolVarP(&download, "no-download", "", true, "Download")
+	dumpCmd.PersistentFlags().BoolVarP(
+		&download, "no-download", "", true, "Do not download the file locally")
 
 	containerCmd.AddCommand(execCmd)
 	containerCmd.AddCommand(dumpCmd)

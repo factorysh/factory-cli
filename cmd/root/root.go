@@ -92,7 +92,7 @@ func init() {
 	log.AddHook(filenameHook)
 
 	default_gitlab, default_project, _ := _gitlab.GitRemote()
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.factory-cli.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is $HOME/.factory-cli.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server")
 	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", default_project, "Project")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
