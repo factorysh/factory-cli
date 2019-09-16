@@ -17,7 +17,8 @@ L'utilisation du client requiert:
 - un https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html[token
   gitlab] avec, à minima, les scopes `api` et `read_registry`.
 
-- lancer la commande depuis une repository git hébergé sur gitlab.
+- de lancer la commande depuis un projet git hébergé sur gitlab. Ainsi certain
+  paramètre sont déduis de votre .git (url du gitlab et non du projet)
 
 == Options communes
 
@@ -35,8 +36,8 @@ Vous pouvez obtenir l'aide d'une commande de la même manière:
 $ factory journal -h
 ----
 
-La plupart des commandes sont lié à un environnement (staging/production)
-L'option `-e staging` indique que la commande agira sur cet environnement.
+La plupart des commandes sont liées à un environnement (staging/production/etc.)
+L'option `-e staging` indique que la commande agira sur l'environnement de staging.
 
 [source, shell]
 ----
