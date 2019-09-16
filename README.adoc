@@ -1,0 +1,145 @@
+= Utilisation du client en ligne de commande
+
+`factory` CLI est une application compilée, sans dépendance, disponible pour
+différents OS.
+
+Ce client permet d'intérragir avec les projets déployés sur votre usine logiciel factory.
+
+== Pré requis
+
+L'utilisation du client requiert:
+
+- un agent ssh (reportez vous à la documentation de ssh-agent) gérant une clé
+  ssh dont la clé publique a été uploader sur votre compte utilisateur gitlab.
+  https://docs.gitlab.com/ce/ssh/README.html[Voir la documentation gitlab] pour
+  plus d'information sur ce point.
+
+- un https://docs.gitlab.com/ce/user/profile/personal_access_tokens.html[token
+  gitlab] avec, à minima, les scopes `api` et `read_registry`.
+
+- lancer la commande depuis une repository git hébergé sur gitlab.
+
+== Options communes
+
+Obtenir de l'aide, utilisez l'option `-h`
+
+[source, shell]
+----
+$ factory journal -h
+----
+
+Vous pouvez obtenir l'aide d'une commande de la même manière:
+
+[source, shell]
+----
+$ factory journal -h
+----
+
+La plupart des commandes sont lié à un environnement (staging/production)
+L'option `-e staging` indique que la commande agira sur cet environnement.
+
+[source, shell]
+----
+$ factory journal -e staging
+----
+
+== Consultation des journaux systèmes
+
+Factory regroupe et homogénéise diverses sources de logs pour des services
+locaux ou distants.
+
+La commande `factory journal` permets d'accéder et d'interroger le flot de logs
+de ses applications. Il est possible d'accéder aux événements passés, mais
+aussi de suivre le flot d'événements courants, en direct.
+
+
+Pour accéder au journaux, les commandes disponibles sont les suivantes
+(l'exemple utilise le serveur de préprod) :
+
+Afficher les 10 dernières lignes de log
+
+[source, shell]
+----
+factory journal -e staging
+----
+
+Afficher les 30 dernières lignes de log
+
+[source, shell]
+----
+factory journal -e staging --lines -30
+----
+
+Afficher les 10 dernières lignes et suivre le flow
+
+[source, shell]
+----
+factory journal -e staging --lines -10 --follow
+----
+
+Appliquer une regex sur les logs
+
+[source, shell]
+----
+factory journal -e staging --lines -10 --follow --regexp "Handshake"
+----
+
+== Copier des fichiers
+
+Un serveur sftp est à votre disposition.
+
+Vous pouvez l'utiliser en mode interractif:
+
+[source, shell]
+----
+factory volume -e staging sftp
+----
+
+Ou en mode non interractif, en passant vos commandes via l'entrée standard (STDIN).
+
+Pousser un fichier:
+
+[source, shell]
+----
+echo put test ./data/volume/test | factory volume -e staging sftp
+----
+
+Récupérer un fichier:
+
+[source, shell]
+----
+echo get ./data/volume/test test | factory volume -e staging sftp
+----
+
+== Executer une commande au sein d'un conteneur
+
+`factory exec` vous permets de lancer une commande au sein des conteneurs de vôtre projet.
+
+Bash est la commande par défaut:
+
+[source, shell]
+----
+factory container exec -e staging web -- ls -l
+----
+
+Mais vous pouvez en spécifier une:
+
+[source, shell]
+----
+factory container exec -e staging web -- ls -l
+----
+
+`--` est utiliser pour passer les arguments au shell et non à `factory exec`.
+
+== Récupérer un dump de base de donnée
+
+La commande `factory dump` vous permets de récupérer un dump de base de données:
+
+[source, shell]
+----
+factory container dump -e front mysql
+----
+
+Le fichier est récupéré en local sous forme d'archive.
+
+
