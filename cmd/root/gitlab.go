@@ -2,7 +2,6 @@ package root
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -10,7 +9,7 @@ import (
 )
 
 func GitlabClient() (*gitlab.Client, error) {
-	git := gitlab.NewClient(client, os.Getenv("PRIVATE_TOKEN"))
+	git := gitlab.NewClient(client, GitlabToken)
 	git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", GitlabUrl))
 	return git, nil
 }

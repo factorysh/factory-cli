@@ -33,6 +33,7 @@ import (
 var (
 	cfgFile     string
 	GitlabUrl   string
+	GitlabToken string
 	Project     string
 	Verbose     bool
 	Environment string
@@ -51,6 +52,18 @@ var RootCmd = &cobra.Command{
 +----------+  |_|  \__,_|\___|\__\___/|_|   \__, |
                                              |___/
 `,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// this will run on all subcommands
+		// its used to validate globale options
+		if GitlabUrl == "" {
+			fmt.Println("You must provide a valid gitlab url")
+			os.Exit(1)
+		}
+		if GitlabToken == "" {
+			fmt.Println("You must provide a valid gitlab token")
+			os.Exit(1)
+		}
+	},
 }
 
 func loadPemFromEnv() {
@@ -92,9 +105,11 @@ func init() {
 	log.AddHook(filenameHook)
 
 	default_gitlab, default_project, _ := _gitlab.GitRemote()
+	default_token := os.Getenv("PRIVATE_TOKEN")
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is $HOME/.factory-cli.yaml)")
-	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server")
-	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", default_project, "Project")
+	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server url")
+	RootCmd.PersistentFlags().StringVarP(&GitlabToken, "token", "t", default_token, "Gitlab token")
+	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", default_project, "Gitlab project path")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
 
 	client = &http.Client{}
