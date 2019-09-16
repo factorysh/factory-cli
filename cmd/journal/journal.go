@@ -3,21 +3,19 @@ package journal
 import (
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"regexp"
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"github.com/factorysh/factory-cli/cmd/root"
 	"github.com/factorysh/factory-cli/journaleux"
 	"github.com/factorysh/factory-cli/signpost"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 var (
 	lines     int
-	target    string
 	format    string
 	timestamp bool
 	follow    bool
@@ -27,9 +25,8 @@ var (
 
 func init() {
 	journalCmd.PersistentFlags().IntVarP(&lines, "lines", "n", -10, "Number of lines to display")
-	journalCmd.PersistentFlags().StringVarP(&target, "target", "H", "", "Address of Journaleux service")
 	journalCmd.PersistentFlags().StringVar(&format, "format", "bare", "Output format : bare|json|jsonpretty")
-	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "t", false, "Show timestamps")
+	journalCmd.PersistentFlags().BoolVarP(&timestamp, "timestamp", "T", false, "Show timestamps")
 	journalCmd.PersistentFlags().BoolVarP(&follow, "follow", "f", false, "Follow")
 	journalCmd.PersistentFlags().StringVarP(&re, "regexp", "r", "", "Regular expression filter")
 	root.FlagE(journalCmd.PersistentFlags())
@@ -58,19 +55,11 @@ var journalCmd = &cobra.Command{
 			return err
 		}
 
-		var t *url.URL
-		if target == "" {
-			t, err = signpost.New(f.Project(root.Project)).Target(root.Environment)
-			if err != nil {
-				return err
-			}
-		} else {
-			t, err = url.Parse(target)
-			if err != nil {
-				return err
-			}
+		t, err := signpost.New(f.Project(root.Project)).Target(root.Environment)
+		if err != nil {
+			return err
 		}
-		t.Host = fmt.Sprintf("%s:5000", t.Hostname())
+		t.Host = t.Hostname()
 		log.Debug("target: ", t.Host)
 		j := journaleux.New(f.Project(root.Project), t)
 		h, err := j.Hello()
