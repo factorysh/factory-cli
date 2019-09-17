@@ -54,6 +54,7 @@ var RootCmd = &cobra.Command{
 `,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// this will run on all subcommands
+		// its used to validate globale options
 
 		if Verbose {
 			log.SetLevel(log.DebugLevel)
@@ -62,7 +63,6 @@ var RootCmd = &cobra.Command{
 			log.SetLevel(log.InfoLevel)
 		}
 
-		// its used to validate globale options
 		if GitlabUrl == "" {
 			fmt.Println("You must provide a valid gitlab url")
 			os.Exit(1)
