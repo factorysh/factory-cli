@@ -15,11 +15,11 @@
 package main
 
 import (
-	"github.com/factorysh/factory-cli/cmd/root"
-	_ "github.com/factorysh/factory-cli/cmd/journal" // journal commands
-	_ "github.com/factorysh/factory-cli/cmd/volume" // volume commands
 	_ "github.com/factorysh/factory-cli/cmd/container" // container commands
-	_ "github.com/factorysh/factory-cli/cmd/project" // project commands
+	_ "github.com/factorysh/factory-cli/cmd/infos"     // infos commands
+	_ "github.com/factorysh/factory-cli/cmd/journal"   // journal commands
+	"github.com/factorysh/factory-cli/cmd/root"
+	_ "github.com/factorysh/factory-cli/cmd/volume" // volume commands
 )
 
 func main() {

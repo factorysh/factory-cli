@@ -68,20 +68,21 @@ L'option `-e staging` indique que la commande agira sur l'environnement de stagi
 $ factory journal -e staging
 ----
 
-== Lister vos projets
+== Afficher les informations du projet
 
-Afficher la liste de vos projets gitlab:
-
-[source, shell]
-----
-$ factory project ls
-----
-
-Afficher la liste des environnements du projet courant:
+Afficher les informations du projet courant:
 
 [source, shell]
 ----
-$ factory project environment
+$ factory infos
+----
+
+Afficher aussi la liste des environnements du projet courant:
+
+[source, shell]
+----
+$ factory infos --with-environments
+$ factory infos -e
 ----
 
 == Consultation des journaux systèmes
