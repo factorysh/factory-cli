@@ -19,21 +19,25 @@ Factory CLI talks to multiple services and handles redirections.
 +----------+  |_|  \__,_|\___|\__\___/|_|   \__, |
                                              |___/
 
+Full documentation:
+  https://github.com/factorysh/factory-cli/blob/master/README.fr.adoc
+
 Usage:
   factory [command]
 
 Available Commands:
   container   Do something on a container
   help        Help about any command
+  infos       Show project's infos
   journal     Show journal
-  project     Projects subcommand
   volume      Do something on a volume
 
 Flags:
-      --config string    config file (default is $HOME/.factory-cli.yaml)
-  -g, --gitlab string    Gitlab server (default "github.com")
+      --config string    Config file (default is $HOME/.factory-cli.yaml)
+  -g, --gitlab string    Gitlab server url (default "github.com")
   -h, --help             help for factory
-  -p, --project string   Project (default "factorysh/factory-cli")
+  -p, --project string   Gitlab project path (default "factorysh/factory-cli")
+  -t, --token string     Gitlab token
   -v, --verbose          Verbose output
 
 Use "factory [command] --help" for more information about a command.

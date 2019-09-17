@@ -51,6 +51,9 @@ var RootCmd = &cobra.Command{
 |          |  |  _| (_| | (__| || (_) | |  | |_| |
 +----------+  |_|  \__,_|\___|\__\___/|_|   \__, |
                                              |___/
+
+Full documentation:
+  https://github.com/factorysh/factory-cli/blob/master/README.fr.adoc
 `,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// this will run on all subcommands
