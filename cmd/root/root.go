@@ -54,14 +54,33 @@ var RootCmd = &cobra.Command{
 `,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// this will run on all subcommands
+
+		if Verbose {
+			log.SetLevel(log.DebugLevel)
+			log.Debug("Verbose mode on")
+		} else {
+			log.SetLevel(log.InfoLevel)
+		}
+
 		// its used to validate globale options
 		if GitlabUrl == "" {
 			fmt.Println("You must provide a valid gitlab url")
 			os.Exit(1)
 		}
+		// get token from env if not already set via -t
+		if GitlabToken == "" {
+			GitlabToken = os.Getenv("PRIVATE_TOKEN")
+			log.Debug(GitlabToken)
+		}
+		// get token from config if not already set
+		if GitlabToken == "" {
+			GitlabToken = viper.Get("token").(string)
+		}
 		if GitlabToken == "" {
 			fmt.Println("You must provide a valid gitlab token")
 			os.Exit(1)
+		} else {
+			log.Debug(GitlabToken)
 		}
 	},
 }
@@ -93,23 +112,24 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig,
-		func() {
-			if Verbose {
-				log.SetLevel(log.DebugLevel)
-			} else {
-				log.SetLevel(log.InfoLevel)
-			}
-		})
+	cobra.OnInitialize(initConfig)
+
 	filenameHook := filename.NewHook()
 	log.AddHook(filenameHook)
 
 	default_gitlab, default_project, _ := _gitlab.GitRemote()
-	default_token := os.Getenv("PRIVATE_TOKEN")
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is $HOME/.factory-cli.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&GitlabUrl, "gitlab", "g", default_gitlab, "Gitlab server url")
-	RootCmd.PersistentFlags().StringVarP(&GitlabToken, "token", "t", default_token, "Gitlab token")
 	RootCmd.PersistentFlags().StringVarP(&Project, "project", "p", default_project, "Gitlab project path")
+
+	// show when token is set in env
+	// do not set default token value (this appears in help)
+	token_help := "Gitlab token"
+	if os.Getenv("PRIVATE_TOKEN") != "" {
+		token_help += " (default $PRIVATE_TOKEN)"
+	}
+	RootCmd.PersistentFlags().StringVarP(&GitlabToken, "token", "t", "", token_help)
+
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
 
 	client = &http.Client{}
@@ -136,7 +156,9 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

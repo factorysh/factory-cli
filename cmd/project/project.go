@@ -13,7 +13,6 @@ import (
 func init() {
 	projectCmd.AddCommand(projectLsCmd)
 	projectCmd.AddCommand(environmentsCmd)
-	projectCmd.AddCommand(projectTargetCmd)
 	root.RootCmd.AddCommand(projectCmd)
 }
 
@@ -63,43 +62,30 @@ var environmentsCmd = &cobra.Command{
 			return err
 		}
 		log.Debug(root.Project)
-		environments, _, err := git.Environments.ListEnvironments(root.Project, &_gitlab.ListEnvironmentsOptions{})
-		if err != nil {
-			return err
-		}
-		log.Debug("environments: ", len(environments))
-		for _, env := range environments {
-			if env.ExternalURL != "" {
-				fmt.Printf("%v: %v\n", env.Name, env.ExternalURL)
-			} else {
-				fmt.Printf("%v\n", env.Name)
-			}
-		}
-		return nil
-	},
-}
 
-var projectTargetCmd = &cobra.Command{
-	Use:   "target",
-	Short: "Show targets of a project",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return fmt.Errorf("[project] environment")
-		}
-		environment := args[0]
-		log.WithField("project", root.Project).
-			WithField("environment", environment).
-			WithField("gitlab_url", root.GitlabUrl).
-			Debug()
 		f, err := root.Factory()
 		if err != nil {
 			return err
 		}
-		t, err := signpost.New(f.Project(root.Project)).Target(environment)
+
+		environments, _, err := git.Environments.ListEnvironments(root.Project, &_gitlab.ListEnvironmentsOptions{})
 		if err != nil {
 			return err
 		}
-		fmt.Println(t)
+		s := signpost.New(f.Project(root.Project))
+		log.Debug("environments: ", len(environments))
+		for _, env := range environments {
+			t, err := s.Target(env.Name)
+			hostname := "unknown"
+			if err == nil {
+				hostname = t.Hostname()
+			}
+			if env.ExternalURL != "" {
+				fmt.Printf("%v (%v): %v\n", env.Name, hostname, env.ExternalURL)
+			} else {
+				fmt.Printf("%v (%v)\n", env.Name, hostname)
+			}
+		}
 		return nil
 	},
 }
