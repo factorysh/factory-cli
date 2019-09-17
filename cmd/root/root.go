@@ -74,7 +74,10 @@ var RootCmd = &cobra.Command{
 		}
 		// get token from config if not already set
 		if GitlabToken == "" {
-			GitlabToken = viper.Get("token").(string)
+			value := viper.Get("token")
+			if value != nil {
+				GitlabToken = value.(string)
+			}
 		}
 		if GitlabToken == "" {
 			fmt.Println("You must provide a valid gitlab token")
@@ -88,6 +91,13 @@ var RootCmd = &cobra.Command{
 func loadPemFromEnv() {
 	// check if we must add a CA from env
 	pemPath := os.Getenv("CA_CERTIFICAT")
+	if pemPath == "" {
+		// also check config
+		value := viper.Get("ca_certificat")
+		if value != nil {
+			pemPath = value.(string)
+		}
+	}
 	if pemPath != "" {
 		// read file
 		pemData, err := ioutil.ReadFile(pemPath)
@@ -105,14 +115,13 @@ func loadPemFromEnv() {
 }
 
 func Execute() {
-	loadPemFromEnv()
 	if err := RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig, loadPemFromEnv)
 
 	filenameHook := filename.NewHook()
 	log.AddHook(filenameHook)

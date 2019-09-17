@@ -52,6 +52,14 @@ $ export PRIVATE_TOKEN=votre_token
 $ factory ...
 ----
 
+Enfin, vous pouvez le stocker dans un fichier de configuration:
+
+[source, shell]
+----
+$ echo "token: votre_token" > $HOME/.factory-cli.yaml
+----
+
+
 La plupart des commandes sont liées à un environnement (staging/production/etc.)
 L'option `-e staging` indique que la commande agira sur l'environnement de staging.
 
