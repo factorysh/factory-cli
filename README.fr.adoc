@@ -77,28 +77,28 @@ Afficher les 10 dernières lignes de log
 
 [source, shell]
 ----
-factory journal -e staging
+$ factory journal -e staging
 ----
 
 Afficher les 30 dernières lignes de log
 
 [source, shell]
 ----
-factory journal -e staging --lines -30
+$ factory journal -e staging --lines -30
 ----
 
 Afficher les 10 dernières lignes et suivre le flow
 
 [source, shell]
 ----
-factory journal -e staging --lines -10 --follow
+$ factory journal -e staging --lines -10 --follow
 ----
 
 Appliquer une regex sur les logs
 
 [source, shell]
 ----
-factory journal -e staging --lines -10 --follow --regexp "Handshake"
+$ factory journal -e staging --lines -10 --follow --regexp "Handshake"
 ----
 
 == Copier des fichiers
@@ -109,7 +109,7 @@ Vous pouvez l'utiliser en mode interractif:
 
 [source, shell]
 ----
-factory volume -e staging sftp
+$ factory volume -e staging sftp
 ----
 
 Ou en mode non interractif, en passant vos commandes via l'entrée standard (STDIN).
@@ -118,14 +118,14 @@ Pousser un fichier:
 
 [source, shell]
 ----
-echo put test ./data/volume/test | factory volume -e staging sftp
+$ echo put test ./data/volume/test | factory volume -e staging sftp
 ----
 
 Récupérer un fichier:
 
 [source, shell]
 ----
-echo get ./data/volume/test test | factory volume -e staging sftp
+$ echo get ./data/volume/test test | factory volume -e staging sftp
 ----
 
 == Executer une commande au sein d'un conteneur
@@ -136,17 +136,17 @@ Bash est la commande par défaut:
 
 [source, shell]
 ----
-factory container exec -e staging web -- ls -l
+$ factory container exec -e staging web
 ----
 
 Mais vous pouvez en spécifier une:
 
 [source, shell]
 ----
-factory container exec -e staging web -- ls -l
+$ factory container exec -e staging web -- ls -l
 ----
 
-`--` est utiliser pour passer les arguments au shell et non à `factory exec`.
+`--` est utilisé pour passer les arguments au shell et non à `factory exec`.
 
 == Récupérer un dump de base de donnée
 
@@ -154,7 +154,7 @@ La commande `factory dump` vous permets de récupérer un dump de base de donné
 
 [source, shell]
 ----
-factory container dump -e staging mysql
+$ factory container dump -e staging mysql
 ----
 
 Le fichier est récupéré en local sous forme d'archive.
