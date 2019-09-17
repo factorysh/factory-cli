@@ -143,14 +143,14 @@ Pousser un fichier:
 
 [source, shell]
 ----
-$ echo put test ./data/volume/test | factory volume -e staging sftp
+$ echo "put test ./data/volume/test" | factory volume -e staging sftp
 ----
 
 Récupérer un fichier:
 
 [source, shell]
 ----
-$ echo get ./data/volume/test test | factory volume -e staging sftp
+$ echo "get ./data/volume/test test" | factory volume -e staging sftp
 ----
 
 == Executer une commande au sein d'un conteneur
