@@ -26,7 +26,7 @@ Obtenir de l'aide, utilisez l'option `-h`
 
 [source, shell]
 ----
-$ factory journal -h
+$ factory -h
 ----
 
 Vous pouvez obtenir l'aide d'une commande de la même manière:
@@ -34,6 +34,22 @@ Vous pouvez obtenir l'aide d'une commande de la même manière:
 [source, shell]
 ----
 $ factory journal -h
+----
+
+L'option `-t` vous permet de passer votre token gitlab:
+
+[source, shell]
+----
+$ factory -t votre_token ...
+----
+
+Vous pouvez aussi le définir dans l'environnement de votre shell pour ne pas
+avoir à le repasser à chaque commande:
+
+[source, shell]
+----
+$ export PRIVATE_TOKEN=votre_token
+$ factory ...
 ----
 
 La plupart des commandes sont liées à un environnement (staging/production/etc.)
@@ -138,7 +154,7 @@ La commande `factory dump` vous permets de récupérer un dump de base de donné
 
 [source, shell]
 ----
-factory container dump -e front mysql
+factory container dump -e staging mysql
 ----
 
 Le fichier est récupéré en local sous forme d'archive.
