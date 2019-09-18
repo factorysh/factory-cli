@@ -1,9 +1,10 @@
 = Utilisation du client en ligne de commande
 
-`factory` CLI est une application compilée, sans dépendance, disponible pour
-différents OS.
+`factory` CLI est une application compilée, sans dépendance,
+ https://github.com/factorysh/factory-cli/releases/[disponible pour différents OS].
 
-Ce client permet d'intérragir avec les projets déployés sur votre usine logiciel factory.
+Ce client permet d'intérragir avec les projets déployés sur votre usine
+logiciel factory.
 
 == Pré requis
 

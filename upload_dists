@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+import os
+import sys
+import glob
+
+try:
+    import requests
+except ImportError:
+    print('You need to pip install requests')
+    os.exit(1)
+
+PROJECT = 'factorysh/factory-cli'
+
+RELEASE_URL = 'https://api.github.com/repos/%s/releases' % PROJECT
+
+UPLOAD_URL = (
+    'https://uploads.github.com/repos/%s'
+    '/releases/%%s/assets?name=%%s'
+) % PROJECT
+
+
+def main():
+    rc = 0
+
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        print("No GITHUB_TOKEN set in env")
+        return 1
+
+    headers = {
+        "Authorization": "token %s" % token,
+        "Content-Type": "application/octet-stream",
+    }
+
+    # get all existing releases
+    resp = requests.get(RELEASE_URL, headers=headers)
+    # store releases ids
+    releases = {r['tag_name']: r['id'] for r in resp.json()}
+
+    # for each dist file
+    for filepath in glob.glob("dist/*.gz"):
+
+        filename = os.path.basename(filepath)
+
+        # tag from filename
+        tag = filename[:-3].split("-")[-1]
+        if not tag.startswith("v"):
+            print("dirty filename %s. skipping..." % filename)
+
+        # create release if needed
+        if tag not in releases:
+            resp = requests.post(RELEASE_URL, json={
+                    "tag_name": tag,
+                    "target_commitish": "master",
+                    "name": tag,
+                    "body": "Release %s" % tag,
+                    "draft": False,
+                    "prerelease": False
+                }, headers=headers)
+            assert resp.status_code == 201, resp
+            # store new release id
+            releases[tag] = resp.json()['id']
+
+        # upload file
+        url = UPLOAD_URL % (releases[tag], filename)
+        print("Uploading %s..." % filename)
+        with open(filepath, 'rb') as fd:
+            resp = requests.post(url, headers=headers, data=fd)
+            if resp.status_code != 201:
+                print('Error while uploading %s (%s)' % (filename, resp))
+                rc = 1
+    return rc
+
+
+if __name__ == '__main__':
+    sys.exit(main())
