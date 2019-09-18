@@ -4,13 +4,23 @@ GOOS?=linux
 GOARCH?=amd64
 
 binary: bin vendor
-	go build -ldflags "-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION)" \
+	go build \
+	-ldflags " \
+	-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION) \
+	-X github.com/factorysh/factory-cli/version.os=$(GOOS) \
+	-X github.com/factorysh/factory-cli/version.arch=$(GOARCH) \
+	" \
 	-o bin/factory \
 	main.go
 
 build/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION):
 	env GOOS=$(GOOS) GOARCH=$(GOARCH) \
-	go build -ldflags "-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION)" \
+	go build \
+	-ldflags " \
+	-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION) \
+	-X github.com/factorysh/factory-cli/version.os=$(GOOS) \
+	-X github.com/factorysh/factory-cli/version.arch=$(GOARCH) \
+	" \
 	-o build/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION) \
 	main.go
 

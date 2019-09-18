@@ -19,7 +19,8 @@ import (
 	_ "github.com/factorysh/factory-cli/cmd/infos"     // infos commands
 	_ "github.com/factorysh/factory-cli/cmd/journal"   // journal commands
 	"github.com/factorysh/factory-cli/cmd/root"
-	_ "github.com/factorysh/factory-cli/cmd/volume" // volume commands
+	_ "github.com/factorysh/factory-cli/cmd/upgrade" // upgrade commands
+	_ "github.com/factorysh/factory-cli/cmd/volume"  // volume commands
 )
 
 func main() {
