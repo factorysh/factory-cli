@@ -60,6 +60,7 @@ docker-build:
 		-v ~/.cache:/.cache \
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
+		-e GIT_VERSION=$(GIT_VERSION) \
 		bearstech/golang-dep \
 		make binary
 

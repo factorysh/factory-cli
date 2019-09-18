@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/factorysh/factory-cli/version"
+	log "github.com/sirupsen/logrus"
 )
 
 type Session struct {
@@ -28,7 +29,7 @@ func New(client *http.Client, project string, privateToken string) *Session {
 		privateToken: privateToken,
 		headers:      make(http.Header),
 	}
-	s.headers.Set("User-Agent", fmt.Sprintf("Factory-cli/%v", version.Version()))
+	s.headers.Set("User-Agent", fmt.Sprintf("factory-cli/%v", version.Version()))
 	s.headers.Set("DNT", "1")
 	s.headers.Set("Accept-Encoding", "gzip")
 	s.headers.Set("Connection", "keep-alive")
@@ -120,6 +121,16 @@ func (s *Session) Do(req *http.Request) (*http.Response, error) {
 	r, err := s.client.Do(req)
 	if err != nil {
 		return r, err
+	}
+	if r.StatusCode == 400 { // Need cli upgrade ?
+		required := r.Header.Get("Factory-Cli")
+		if required != "" {
+			fmt.Printf("\n\n!!! factory-cli %v is required. Please upgrade\n", required)
+			os.Exit(1)
+		} else {
+			log.Error(r)
+			return nil, fmt.Errorf("Bad request")
+		}
 	}
 	if r.StatusCode == 401 { // Need auth
 		authenticate := r.Header.Get("www-authenticate") // OAuth
