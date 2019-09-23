@@ -62,11 +62,6 @@ var journalCmd = &cobra.Command{
 		t.Host = t.Hostname()
 		log.Debug("target: ", t.Host)
 		j := journaleux.New(f.Project(root.Project), t)
-		h, err := j.Hello()
-		if err != nil {
-			return err
-		}
-		log.Debug(h)
 		cpt := 0
 		if re != "" {
 			_, err = regexp.Compile(re)

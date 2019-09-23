@@ -132,6 +132,10 @@ func (s *Session) Do(req *http.Request) (*http.Response, error) {
 			return nil, fmt.Errorf("Bad request")
 		}
 	}
+	if r.StatusCode == 403 { // Invalid token
+		log.Error(r)
+		return nil, fmt.Errorf("Invalid token")
+	}
 	if r.StatusCode == 401 { // Need auth
 		authenticate := r.Header.Get("www-authenticate") // OAuth
 		if authenticate == "" || !strings.HasPrefix(authenticate, "Bearer ") {

@@ -1,15 +1,14 @@
 package journaleux
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/factorysh/factory-cli/client"
 	"github.com/factorysh/factory-cli/factory"
 	"github.com/factorysh/go-longrun/longrun/sse"
 )
@@ -24,28 +23,6 @@ func New(project *factory.Project, host *url.URL) *Journaleux {
 		project: project,
 		host:    host,
 	}
-}
-
-func (j *Journaleux) Hello() (string, error) {
-	url := fmt.Sprintf("%s/api/v1/journal/hello", j.host.String())
-	log.Debug(url)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return "", err
-	}
-	resp, err := j.project.Session().Do(req)
-	if err != nil {
-		return "", err
-	}
-	type r struct {
-		Msg string `json:"msg"`
-	}
-	var rr r
-	err = client.ReadJson(resp, &rr)
-	if err != nil {
-		return "", err
-	}
-	return rr.Msg, nil
 }
 
 type LogsOpt struct {
@@ -73,14 +50,30 @@ type EventOrError struct {
 }
 
 func (j *Journaleux) Logs(opts *LogsOpt, visitor func(*Event, error) error) error {
-	buff, err := json.Marshal(opts)
-	if err != nil {
-		return err
+
+	u := fmt.Sprintf("%s/api/v1/journal/logs", j.host.String())
+
+	params := url.Values{}
+	params.Add("project", opts.Project)
+	params.Add("lines", fmt.Sprintf("%v", opts.Lines))
+	if opts.Since != 0 {
+		params.Add("since", strconv.FormatInt(opts.Since, 10))
+	}
+	if opts.Until != 0 {
+		params.Add("until", strconv.FormatInt(opts.Until, 10))
+	}
+	params.Add("priority", strconv.FormatUint(uint64(opts.Priority), 10))
+	if opts.Regexp != "" {
+		params.Add("regexp", opts.Regexp)
+	}
+	for _, name := range opts.Fields {
+		params.Add("fields", fmt.Sprintf("%v=%v", name, opts.Fields[name]))
 	}
 
-	url := fmt.Sprintf("%s/api/v1/journal/logs", j.host.String())
-	log.Debug(url)
-	req, err := http.NewRequest("POST", url, bytes.NewReader(buff))
+	u = u + "?" + params.Encode()
+
+	log.Debug(u)
+	req, err := http.NewRequest("GET", u, nil)
 	if err != nil {
 		return err
 	}
