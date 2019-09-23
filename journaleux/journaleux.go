@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/factorysh/go-longrun/longrun/sse"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/factorysh/factory-cli/client"
 	"github.com/factorysh/factory-cli/factory"
+	"github.com/factorysh/go-longrun/longrun/sse"
 )
 
 type Journaleux struct {
@@ -25,8 +27,9 @@ func New(project *factory.Project, host *url.URL) *Journaleux {
 }
 
 func (j *Journaleux) Hello() (string, error) {
-	req, err := http.NewRequest("GET",
-		fmt.Sprintf("%s/hello", j.host.String()), nil)
+	url := fmt.Sprintf("%s/api/v1/journal/hello", j.host.String())
+	log.Debug(url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return "", err
 	}
@@ -75,9 +78,9 @@ func (j *Journaleux) Logs(opts *LogsOpt, visitor func(*Event, error) error) erro
 		return err
 	}
 
-	req, err := http.NewRequest("POST",
-		fmt.Sprintf("%s/logs", j.host.String()),
-		bytes.NewReader(buff))
+	url := fmt.Sprintf("%s/api/v1/journal/logs", j.host.String())
+	log.Debug(url)
+	req, err := http.NewRequest("POST", url, bytes.NewReader(buff))
 	if err != nil {
 		return err
 	}
