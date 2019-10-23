@@ -1,3 +1,5 @@
+.PHONY: upload_dists
+
 GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 GOOS?=linux
@@ -35,6 +37,23 @@ releases: vendor
 	make release GOOS=windows GOARCH=amd64
 	make release GOOS=linux GOARCH=amd64
 	make release GOOS=darwin GOARCH=amd64
+
+venv:
+	python3 -m venv venv
+	./venv/bin/pip install requests
+
+upload_dists: venv
+	./venv/bin/python upload_dists
+
+new_tag:
+	# check invalid tag name
+	echo $(TAG) | grep -E "^v[0-9].[0-9].[0-9]" || false
+	# fail if tag exists
+	git tag | grep $(TAG) || true
+	git tag $(TAG)
+	git checkout $(TAG)
+
+new_release: new_tag docker-binaries upload_dists
 
 bin:
 	mkdir -p bin
