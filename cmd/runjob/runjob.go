@@ -3,6 +3,7 @@ package runjob
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -14,7 +15,13 @@ import (
 
 const command_label = "sh.factory.cronjob.command"
 
+var (
+	dry_run bool
+)
+
 func init() {
+	runjobCmd.PersistentFlags().BoolVarP(
+		&dry_run, "dry-run", "D", false, "Only print command")
 	root.RootCmd.AddCommand(runjobCmd)
 }
 
@@ -46,6 +53,7 @@ var runjobCmd = &cobra.Command{
 
 		job := args[0]
 		command := ""
+		dry_run_command := ""
 		in_job := false
 		for scanner.Scan() {
 			line := scanner.Text()
@@ -56,10 +64,13 @@ var runjobCmd = &cobra.Command{
 			} else if strings.Index(line, command_label) >= 0 && in_job {
 				command = strings.Split(line, command_label+":")[1]
 				command = strings.Trim(command, " ")
+				dry_run_command = command
 				if strings.HasPrefix(command, "\"") {
 					command = strings.Trim(command, "\"")
 				} else if strings.HasPrefix(command, "'") {
 					command = strings.Trim(command, "'")
+				} else {
+					dry_run_command = "\"" + command + "\""
 				}
 				log.Debug("Found command: " + command)
 				break
@@ -78,18 +89,26 @@ var runjobCmd = &cobra.Command{
 		log.Debug("Command: " + command)
 		if command != "" {
 			compose_command := strings.Split(compose, " ")
+			dry_run_compose_command := append(
+				compose_command,
+				"run", "--rm", job, "bash", "-c", dry_run_command,
+			)
 			compose_command = append(
 				compose_command,
 				"run", "--rm", job, "bash", "-c", command,
 			)
-			c := exec.Command(compose_command[0])
-			c.Args = compose_command
-			c.Stdin = os.Stdin
-			c.Stdout = os.Stdout
-			c.Stderr = os.Stderr
-			err := c.Run()
-			if err != nil {
-				return err
+			if dry_run {
+				fmt.Println(strings.Join(dry_run_compose_command, " "))
+			} else {
+				c := exec.Command(compose_command[0])
+				c.Args = compose_command
+				c.Stdin = os.Stdin
+				c.Stdout = os.Stdout
+				c.Stderr = os.Stderr
+				err := c.Run()
+				if err != nil {
+					return err
+				}
 			}
 		}
 

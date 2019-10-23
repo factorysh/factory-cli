@@ -2,7 +2,7 @@ GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 GOOS?=linux
 GOARCH?=amd64
-export COMPOSE=docker-compose
+export COMPOSE=docker-compose -f docker-compose.yml
 
 binary: bin vendor
 	go build \
@@ -85,8 +85,11 @@ docker-test:
 
 docker-test-runjob: docker-build
 	bin/factory runjob -h
+	bin/factory runjob -D job1
 	bin/factory runjob -v job1
+	bin/factory runjob -D job2
 	bin/factory runjob job2
+	bin/factory runjob -D job3
 	bin/factory runjob job3
 	bin/factory runjob notfound || true
 
