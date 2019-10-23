@@ -84,6 +84,7 @@ docker-test:
 		make test
 
 docker-test-runjob: docker-build
+	bin/factory runjob -h
 	bin/factory runjob -v job1
 	bin/factory runjob job2
 	bin/factory runjob job3

@@ -43,7 +43,7 @@ var containerCmd = &cobra.Command{
 }
 
 var execCmd = &cobra.Command{
-	Use:   "exec service [command]",
+	Use:   "exec <service> [command]",
 	Short: "Exec a command in a container",
 	Long:  `Exec a command in a container. Default to bash`,
 	Args: func(cmd *cobra.Command, args []string) error {
@@ -94,7 +94,7 @@ var execCmd = &cobra.Command{
 }
 
 var dumpCmd = &cobra.Command{
-	Use:   "dump database",
+	Use:   "dump <database>",
 	Short: "Dump a database",
 	Long:  "Dump a database",
 	Args: func(cmd *cobra.Command, args []string) error {

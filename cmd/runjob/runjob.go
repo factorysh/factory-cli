@@ -19,7 +19,7 @@ func init() {
 }
 
 var runjobCmd = &cobra.Command{
-	Use:   "runjob",
+	Use:   "runjob <service>",
 	Short: "Run a job from your local project",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -54,7 +54,6 @@ var runjobCmd = &cobra.Command{
 				in_job = true
 				log.Debug("Found job: " + job)
 			} else if strings.Index(line, command_label) >= 0 && in_job {
-				log.Debug("Found command: " + line)
 				command = strings.Split(line, command_label+":")[1]
 				command = strings.Trim(command, " ")
 				if strings.HasPrefix(command, "\"") {
@@ -62,6 +61,7 @@ var runjobCmd = &cobra.Command{
 				} else if strings.HasPrefix(command, "'") {
 					command = strings.Trim(command, "'")
 				}
+				log.Debug("Found command: " + command)
 				break
 			}
 		}
