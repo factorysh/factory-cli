@@ -55,7 +55,6 @@ new_tag:
 
 new_release: new_tag docker-binaries upload_dists
 	git checkout master
-	git push --tags
 
 bin:
 	mkdir -p bin
