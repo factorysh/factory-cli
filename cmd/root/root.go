@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	_gitlab "github.com/factorysh/factory-cli/gitlab"
 	homedir "github.com/mitchellh/go-homedir"
@@ -83,8 +84,11 @@ Full documentation:
 			}
 		}
 		if GitlabToken == "" {
-			fmt.Println("You must provide a valid gitlab token")
-			os.Exit(1)
+			// do no raise for local command (runjob for now)
+			if strings.HasPrefix("runjob", cmd.Use) {
+				fmt.Println("You must provide a valid gitlab token")
+				os.Exit(1)
+			}
 		} else {
 			log.Debug(GitlabToken)
 		}
