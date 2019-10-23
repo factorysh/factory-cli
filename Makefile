@@ -47,11 +47,11 @@ upload_dists: venv
 
 new_tag:
 	# check invalid tag name
-	echo $(TAG) | grep -E "^v[0-9].[0-9].[0-9]" || false
+	echo $(GIT_VERSION) | grep -E "^v[0-9].[0-9].[0-9]" || false
 	# fail if tag exists
-	git tag | grep $(TAG) || true
-	git tag $(TAG)
-	git checkout $(TAG)
+	git tag | grep $(GIT_VERSION) || true
+	git tag $(GIT_VERSION)
+	git checkout $(GIT_VERSION)
 
 new_release: new_tag docker-binaries upload_dists
 
@@ -90,6 +90,7 @@ docker-binaries:
 		-v ~/.cache:/.cache \
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
+		-e GIT_VERSION=$(GIT_VERSION) \
 		bearstech/golang-dep \
 		make releases
 
