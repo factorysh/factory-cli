@@ -1,0 +1,22 @@
+---
+version: "3"
+
+services:
+    web:
+        image: bearstech/debian:stretch
+
+    job1:
+        image: bearstech/debian:stretch
+        labels:
+            sh.factory.cronjob.command: ls
+
+    job2:
+        image: bearstech/debian:stretch
+        labels:
+            sh.factory.cronjob.command: "ls && echo 'jo1 works'"
+
+    job3:
+        image: bearstech/debian:stretch
+        labels:
+            sh.factory.cronjob.command: 'ls && echo "job2 works"'
+

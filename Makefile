@@ -2,6 +2,7 @@ GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
 
 GOOS?=linux
 GOARCH?=amd64
+export COMPOSE=docker-compose
 
 binary: bin vendor
 	go build \
@@ -82,6 +83,12 @@ docker-test:
 		bearstech/golang-dep \
 		make test
 
+docker-test-runjob: docker-build
+	bin/factory runjob -v job1
+	bin/factory runjob job2
+	bin/factory runjob job3
+	bin/factory runjob notfound || true
+
 test-sftp: docker-build
 	echo get ./data/volume/test /tmp/test | \
 		PRIVATE_TOKEN=$(PRIVATE_TOKEN) ./bin/factory \
@@ -95,4 +102,4 @@ test-exec: docker-build
 		web -- ls -l
 
 clean:
-	rm -rf bin vendor build dist
+	rm -rf bin vendor build dist mysql-*.gz
