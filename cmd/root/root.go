@@ -170,7 +170,6 @@ func initConfig() {
 	// If a config file is found, read it in.
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Debug(err)
 	}
 }
