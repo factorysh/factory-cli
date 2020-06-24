@@ -16,6 +16,9 @@ binary: bin
 	-o bin/factory \
 	main.go
 
+install: binary
+	cp bin/factory /usr/local/bin/
+
 build/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION):
 	env GOOS=$(GOOS) GOARCH=$(GOARCH) \
 	go build \
