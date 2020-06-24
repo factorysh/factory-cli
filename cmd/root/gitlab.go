@@ -9,8 +9,10 @@ import (
 )
 
 func GitlabClient() (*gitlab.Client, error) {
-	git := gitlab.NewClient(client, GitlabToken)
-	git.SetBaseURL(fmt.Sprintf("https://%s/api/v4", GitlabUrl))
+	git, err := gitlab.NewClient(GitlabToken, gitlab.WithBaseURL(fmt.Sprintf("https://%s/api/v4", GitlabUrl)))
+	if err != nil {
+		return nil, err
+	}
 	return git, nil
 }
 
