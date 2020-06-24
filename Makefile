@@ -6,7 +6,7 @@ GOOS?=linux
 GOARCH?=amd64
 export COMPOSE=docker-compose -f docker-compose.yml
 
-binary: bin vendor
+binary: bin
 	go build \
 	-ldflags " \
 	-X github.com/factorysh/factory-cli/version.version=$(GIT_VERSION) \
@@ -33,7 +33,7 @@ dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz: build/factory-$(GOOS)-$(GOARCH
 
 release: build dist dist/factory-$(GOOS)-$(GOARCH)-$(GIT_VERSION).gz
 
-releases: vendor
+releases:
 	make release GOOS=windows GOARCH=amd64
 	make release GOOS=linux GOARCH=amd64
 	make release GOOS=darwin GOARCH=amd64
@@ -64,11 +64,6 @@ dist:
 
 build:
 	mkdir -p build
-
-vendor: dep
-
-dep:
-	dep ensure -v
 
 test:
 	go test -v \
