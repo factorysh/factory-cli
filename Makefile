@@ -1,6 +1,7 @@
 .PHONY: upload_dists
 
 GIT_VERSION?=$(shell git describe --tags --always --abbrev=42 --dirty)
+CACHE?=~/.cache
 
 GOOS?=linux
 GOARCH?=amd64
@@ -76,7 +77,7 @@ test:
 docker-build:
 	docker run --rm \
 		-u `id -u` \
-		-v ~/.cache:/.cache \
+		-v $(CACHE):/.cache \
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
 		-e GIT_VERSION=$(GIT_VERSION) \
@@ -86,7 +87,7 @@ docker-build:
 docker-binaries:
 	docker run --rm \
 		-u `id -u` \
-		-v ~/.cache:/.cache \
+		-v $(CACHE):/.cache \
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
 		-e GIT_VERSION=$(GIT_VERSION) \
@@ -96,7 +97,7 @@ docker-binaries:
 docker-test:
 	docker run --rm \
 		-u `id -u` \
-		-v ~/.cache:/.cache \
+		-v $(CACHE):/.cache \
 		-v `pwd`:/go/src/github.com/factorysh/factory-cli \
 		-w /go/src/github.com/factorysh/factory-cli \
 		bearstech/golang-dep \
