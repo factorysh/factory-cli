@@ -16,8 +16,13 @@ func gitUrl(url string) (string, string) {
 }
 
 func httpUrl(url string) (string, string) {
-	slugs := strings.SplitN(url, "@", 2)
-	slugs = strings.SplitN(slugs[1], "/", 2)
+	slugs := strings.SplitN(url, "/", 3)
+	if (strings.Contains(url, "@")) {
+		slugs = strings.SplitN(url, "@", 2)
+		slugs = strings.SplitN(slugs[1], "/", 2)
+	} else {
+		slugs = strings.SplitN(slugs[2], "/", 2)
+	}
 	server := slugs[0]
 	project := strings.SplitN(slugs[1], ".", 2)[0]
 	return server, project
