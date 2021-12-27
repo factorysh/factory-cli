@@ -10,8 +10,8 @@ jobs:
       - name: Pull image
         run: docker pull bearstech/golang-dep
       - name: Build
-        run: make docker-build CACHE=cache
+        run: make docker-build CACHE=`pwd`/.cache
       - name: Tests
-        run: make docker-test CACHE=cache
+        run: make docker-test CACHE=`pwd`/.cache
       - name: Tests runjob
-        run: make docker-test-runjob CACHE=cache
+        run: make docker-test-runjob CACHE=`pwd`/.cache
