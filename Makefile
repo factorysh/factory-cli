@@ -7,6 +7,9 @@ GOOS?=linux
 GOARCH?=amd64
 export COMPOSE=docker-compose -f docker-compose.yml
 
+$(CACHE):
+	mkdir -p $(CACHE)
+
 binary: bin
 	go build \
 	-ldflags " \
@@ -74,7 +77,7 @@ test:
 		github.com/factorysh/factory-cli/client \
 		github.com/factorysh/factory-cli/gitlab
 
-docker-build:
+docker-build: $(CACHE)
 	docker run --rm \
 		-u `id -u` \
 		-v $(CACHE):/.cache \
@@ -84,7 +87,7 @@ docker-build:
 		bearstech/golang-dep \
 		make binary
 
-docker-binaries:
+docker-binaries: $(CACHE)
 	docker run --rm \
 		-u `id -u` \
 		-v $(CACHE):/.cache \
@@ -94,7 +97,7 @@ docker-binaries:
 		bearstech/golang-dep \
 		make releases
 
-docker-test:
+docker-test: $(CACHE)
 	docker run --rm \
 		-u `id -u` \
 		-v $(CACHE):/.cache \
