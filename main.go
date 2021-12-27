@@ -17,7 +17,6 @@ package main
 import (
 	_ "github.com/factorysh/factory-cli/cmd/container" // container commands
 	_ "github.com/factorysh/factory-cli/cmd/infos"     // infos commands
-	_ "github.com/factorysh/factory-cli/cmd/journal"   // journal commands
 	"github.com/factorysh/factory-cli/cmd/root"
 	_ "github.com/factorysh/factory-cli/cmd/runjob"  // runjob command
 	_ "github.com/factorysh/factory-cli/cmd/upgrade" // upgrade commands
