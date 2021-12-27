@@ -44,7 +44,7 @@ var containerCmd = &cobra.Command{
 }
 
 var logsCmd = &cobra.Command{
-	Use:   "log <service>",
+	Use:   "logs <service>",
 	Short: "Show logs of a container",
 	Long:  `Show logs of a container`,
 	Args: func(cmd *cobra.Command, args []string) error {
