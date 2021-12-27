@@ -31,6 +31,7 @@ func init() {
 	dumpCmd.PersistentFlags().BoolVarP(
 		&download, "no-download", "", true, "Do not download the file locally")
 
+	containerCmd.AddCommand(logsCmd)
 	containerCmd.AddCommand(execCmd)
 	containerCmd.AddCommand(dumpCmd)
 	root.RootCmd.AddCommand(containerCmd)
@@ -40,6 +41,54 @@ var containerCmd = &cobra.Command{
 	Use:   "container",
 	Short: "Do something on a container",
 	Long:  `Do something on a container.`,
+}
+
+var logsCmd = &cobra.Command{
+	Use:   "log <service>",
+	Short: "Show logs of a container",
+	Long:  `Show logs of a container`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if root.Project == "" {
+			return errors.New("please specify a project with -p")
+		}
+		if err := root.AssertEnvironment(); err != nil {
+			return err
+		}
+		if len(args) == 0 {
+			return errors.New("you must specify a service")
+		}
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		address, err := root.SSHAddress()
+		if err != nil {
+			return err
+		}
+		command := []string{
+			"ssh",
+			"-a", "-x", "-t", "-p", "2222",
+		}
+		command = append(command, root.SSHExtraArgs()...)
+
+		command = append(command, []string{address, "logs"}...)
+		command = append(command, args...)
+
+		log.Debug(command)
+		if dry_run {
+			fmt.Printf("%s\n", strings.Join(command, " "))
+		} else {
+			c := exec.Command("ssh")
+			c.Args = command
+			c.Stdin = os.Stdin
+			c.Stdout = os.Stdout
+			c.Stderr = os.Stderr
+			err := c.Run()
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	},
 }
 
 var execCmd = &cobra.Command{
