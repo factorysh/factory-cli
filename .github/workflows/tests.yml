@@ -1,0 +1,22 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  tox:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.5, 3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pull image
+        run: docker pull bearstech/golang-dep
+      - name: Build
+        run: make docker-build
+      - name: Tests
+        run: make docker-test
+      - name: Tests runjob
+        run: make docker-test-runjob
