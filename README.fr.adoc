@@ -34,7 +34,8 @@ Vous pouvez obtenir l'aide d'une commande de la même manière:
 
 [source, shell]
 ----
-$ factory journal -h
+$ factory container -h
+$ factory container exec -h
 ----
 
 L'option `-t` vous permet de passer votre token gitlab:
@@ -66,7 +67,7 @@ L'option `-e staging` indique que la commande agira sur l'environnement de stagi
 
 [source, shell]
 ----
-$ factory journal -e staging
+$ factory container exec myapp -e staging
 ----
 
 == Afficher les informations du projet
@@ -84,47 +85,6 @@ Afficher aussi la liste des environnements du projet courant:
 ----
 $ factory infos --with-environments
 $ factory infos -e
-----
-
-== Consultation des journaux systèmes
-
-Factory regroupe et homogénéise diverses sources de logs pour des services
-locaux ou distants.
-
-La commande `factory journal` permets d'accéder et d'interroger le flot de logs
-de ses applications. Il est possible d'accéder aux événements passés, mais
-aussi de suivre le flot d'événements courants, en direct.
-
-
-Pour accéder au journaux, les commandes disponibles sont les suivantes
-(l'exemple utilise le serveur de préprod) :
-
-Afficher les 10 dernières lignes de log
-
-[source, shell]
-----
-$ factory journal -e staging
-----
-
-Afficher les 30 dernières lignes de log
-
-[source, shell]
-----
-$ factory journal -e staging --lines -30
-----
-
-Afficher les 10 dernières lignes et suivre le flow
-
-[source, shell]
-----
-$ factory journal -e staging --lines -10 --follow
-----
-
-Appliquer une regex sur les logs
-
-[source, shell]
-----
-$ factory journal -e staging --lines -10 --follow --regexp "Handshake"
 ----
 
 == Copier des fichiers
