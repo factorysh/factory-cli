@@ -11,6 +11,8 @@ jobs:
         run: docker pull bearstech/golang-dep
       - name: Build
         run: make docker-build CACHE=`pwd`/.cache
+      - name: git remote show
+        run: git remote show
       - name: Tests
         run: make docker-test CACHE=`pwd`/.cache
       - name: Tests runjob
